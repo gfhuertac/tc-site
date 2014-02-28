@@ -215,7 +215,7 @@ $photoLink = 'http://community.topcoder.com/i/m/nophoto_login.gif';
 					<div class="action">
 						<a class="profileLink" href="<?php bloginfo('wpurl');?>/member-profile/<?php echo $coder->handle;?>">My Profile</a>
 						<a href="http://community.topcoder.com/tc?module=MyHome">My TopCoder </a>
-						<a href="http://community.topcoder.com/tc?module=MyHome" class="linkAlt">Account Settings</a>
+						<a href="http://community.topcoder.com/tc?module=MyHome" class="linkAlt">Account Setting</a>
 					</div>
 				</div>
 				</div>
