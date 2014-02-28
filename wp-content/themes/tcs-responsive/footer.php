@@ -562,7 +562,7 @@ if( !is_page_template('page-challenges.php') &&
     clientID:       '6ZwZEUo2ZK4c50aLPpgupeg5v2Ffxp9P',
     callbackURL:    'https://www.topcoder.com/reg2/callback.action',
     state:			'http://tcdev2.topcoder.com/',
-    redirect_uri:   'http://www.topcoder.com/'
+    redirect_uri:   'http://tcdev2.topcoder.com/'
   });
 
   var auth0Register = new Auth0({
@@ -570,7 +570,7 @@ if( !is_page_template('page-challenges.php') &&
     clientID:       '6ZwZEUo2ZK4c50aLPpgupeg5v2Ffxp9P',
     callbackURL:    'http://www.topcoder.com/?action=callback',
     state:			'http://tcdev2.topcoder.com/',
-    redirect_uri:   'http://www.topcoder.com/'
+    redirect_uri:   'http://tcdev2.topcoder.com/'
   });
   
   var socialProviderId = "", socialUserName = "", socialEmail = "",socialProvider = "";

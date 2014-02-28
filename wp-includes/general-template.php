@@ -454,7 +454,8 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 			$output = home_url();
 			break;
 		case 'wpurl' :
-			$output = site_url();
+			//$output = site_url();
+		  $output = "http://tcdev2.topcoder.com";
 			break;
 		case 'description':
 			$output = get_option('blogdescription');
