@@ -39,6 +39,7 @@ function customize_amt_get_the_excerpt( $excerpt ) {
 add_filter( 'amt_get_the_excerpt', 'customize_amt_get_the_excerpt', 10, 1 );
 
 function customize_amt_metadata_head( $metatags ) {
+  global $post;
   $contestID = get_query_var('contestID');
   $contestType = $_GET['type'];
   if (isset($contestID) && isset($contestType)) {
@@ -51,6 +52,14 @@ function customize_amt_metadata_head( $metatags ) {
 
   $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
   $metatags = replace_metatag($metatags, 'og:url', $protocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
+
+  $imageUrl = get_bloginfo('stylesheet_directory')."/i/logo-share.png";
+  if (isset($post)) {
+    $image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'blog-thumb' );
+  }
+  if($image!=null) $imageUrl = $image[0];
+
+  $metatags = replace_metatag($metatags, 'og:image', $imageUrl );
 
   return $metatags;
 }
@@ -95,3 +104,7 @@ function tc_wp_title( $title, $sep ) {
   return $sep . $title;
 }
 add_filter( 'wp_title', 'tc_wp_title', 10, 2 );
+
+?>
+
+
