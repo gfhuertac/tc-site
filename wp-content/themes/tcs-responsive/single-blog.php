@@ -141,11 +141,7 @@ $blogPageTitle = get_option("blog_page_title") == "" ? "Welcome to the topcoder 
 							
 							<!-- share via -->
 							<div class="shareVia">
-								<span>Share via : </span>
-								<a href="<?php echo $email_article;?>" class="shareButton shareMail"></a>
-								<a href="<?php echo $fbShare;?>" class="shareButton shareFb"></a>
-								<a href="<?php echo $twitterShare;?>" class="shareButton shareTw"></a>
-								<a href="<?php echo $gplusShare;?>" class="shareButton shareGPlus"></a>
+								<span>Share via : <?php add_share($post, 16);?></span>
 							</div>
 							<!-- share via End -->
 						</section>

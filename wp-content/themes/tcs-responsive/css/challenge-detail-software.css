@@ -738,6 +738,45 @@
 }
 
 /* addthis.com styles */
+.addthis_24x24_style .addthis_button_print .at300bs,
+.addthis_24x24_style .addthis_button_facebook .at300bs,
+.addthis_24x24_style .addthis_button_twitter .at300bs,
+.addthis_24x24_style .addthis_button_email .at300bs,
+.addthis_24x24_style .addthis_button_google_plusone_share .at300bs,
+.addthis_24x24_style .addthis_button_google .at300bs,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_print,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_facebook,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_twitter,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_email,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_google_plusone_share,
+#toolbox .addthis_24x24_style .at15nc.at300bs.at15t_google {
+    width: 30px !important;
+    height: 30px !important;
+        background: url("../i/share-buttons-24.png") no-repeat left;
+}
+.addthis_24x24_style .at15t_print,
+#main .addthis_24x24_style .at15t_print{
+        background-position: 0 -91px!important;
+}
+.addthis_24x24_style .at15t_facebook,
+#main .addthis_24x24_style .at15t_facebook{
+        background-position: 0 0!important;
+}
+.addthis_24x24_style .at15t_twitter,
+#main .addthis_24x24_style .at15t_twitter{
+        background-position: 0 -61px!important;
+}
+.addthis_24x24_style .at15t_email,
+#main .addthis_24x24_style .at15t_email{
+        background-position: 0 -30px!important;
+}
+.addthis_24x24_style .at15t_google_plusone_share,
+#main .addthis_24x24_style .at15t_google_plusone_share,
+.addthis_24x24_style .at15t_google,
+#main .addthis_24x24_style .at15t_google{
+        background-position: 0 -122px!important;
+}
+
 .addthis_32x32_style .addthis_button_print .at300bs,
 .addthis_32x32_style .addthis_button_facebook .at300bs,
 .addthis_32x32_style .addthis_button_twitter .at300bs,
@@ -770,6 +809,7 @@
 #main .addthis_32x32_style .at15t_google{
 	background-position: 0 -122px!important;
 }
+
 .addthis_counter{
 	-webkit-transition: none;
 	transition: none;

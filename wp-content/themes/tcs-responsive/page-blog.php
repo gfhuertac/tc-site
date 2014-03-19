@@ -162,11 +162,7 @@ $blogPageTitle = get_option("blog_page_title") == "" ? "Welcome to the topcoder 
 											?>
 										</div>
 										<div class="shareVia">
-											<span>Share via : </span>
-											<a href="<?php echo $email_article;?>" class="shareButton shareMail small"></a>
-											<a href="<?php echo $fbShare;?>" class="shareButton shareFb small"></a>
-											<a href="<?php echo $twitterShare;?>" class="shareButton shareTw small"></a>
-											<a href="<?php echo $gplusShare;?>" class="shareButton shareGPlus small"></a>
+											<span>Share via : <?php add_share($post, 16);?></span>
 										</div>
 										<a href="<?php the_permalink();?>" class="continueReading">Continue Reading</a>
 									</div>

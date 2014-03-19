@@ -521,11 +521,7 @@ function get_blog_ajax() {
 						?>
 					</div>
 					<div class="shareVia">
-						<span>Share via : </span>
-						<a href="<?php echo $email_article;?>" class="shareButton"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/i/shares-mail.png" width="21" height="21" /></a>
-						<a href="<?php echo $fbShare;?>" class="shareButton"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/i/shares-fb.png" width="21" height="21" /></a>
-						<a href="<?php echo $twitterShare;?>" class="shareButton"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/i/shares-twitter.png" width="21" height="21" /></a>
-						<a href="<?php echo $gplusShare;?>" class="shareButton"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/i/shares-gplus.png" width="21" height="21" /></a>
+						<span>Share via : <?php add_share($post, 16); ?></span>
 					</div>
 					<a href="<?php the_permalink();?>" class="continueReading">Continue Reading</a>
 				</div>
@@ -1041,4 +1037,8 @@ function mytheme_comment($comment, $args, $depth) {
 
 <?php endif;
 }
+
+include_once('functions-addmeta.php');
+include_once('functions-share.php');
+
 ?>
