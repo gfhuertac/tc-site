@@ -21,7 +21,7 @@ $blog_posts_args = array(
 	'order'            => 'DESC',
 	'post_type'        => 'blog',
 	'suppress_filters' => true );
-	
+
 $blog_posts = get_posts( $blog_posts_args );
 ?>
 <footer id="footer">
@@ -29,11 +29,11 @@ $blog_posts = get_posts( $blog_posts_args );
 		<div class="footerContentSection twitter">
 			<div class="title">Twitter</div>
 			<div class="footerContent">
-				<?php 
+				<?php
 				foreach ($tweets as $tweet) :
 				?>
 				<div class="footerTwEntry">
-					<?php 
+					<?php
 					if ($tweet->retweeted_status):
 					?>
 					<a href="http://www.twitter.com/<?php echo $tweet->retweeted_status->user->screen_name; ?>" >
@@ -48,12 +48,12 @@ $blog_posts = get_posts( $blog_posts_args );
 				</div>
 				<?php endforeach;	?>
 				<a class="btn btnFooter" href="<?php echo get_option('twitterURL'); ?>"><span class="twFollowIcon"></span><span class="twFollowBtnText">Follow</span></a>
-			</div>		
+			</div>
 		</div>
 		<div class="footerContentSection recentBlogPosts">
 			<div class="title">Recent Blog Posts</div>
 			<div class="footerContent">
-				<?php 
+				<?php
 				foreach ($blog_posts as $post) :
 					setup_postdata( $post );
 				?>
@@ -90,13 +90,13 @@ $blog_posts = get_posts( $blog_posts_args );
 				<div class="row">
 					<form id="emailForm" onsubmit="return newsletter_check(this)" name="FeedBlitz_9feab01d431311e39e69002590771423" style="display:block" method="POST" action="http://www.feedblitz.com/f/f.fbz?AddNewUserDirect">
 						<input type="email" class="email" name="EMAIL" placeholder="Your email address" maxlength="64" />
-						<input name="FEEDID" type="hidden" value="926643" /> 
+						<input name="FEEDID" type="hidden" value="926643" />
 						<input name="PUBLISHER" type="hidden" value="34610190" />
 						<!-- <a onclick="FeedBlitz_9feab01d431311e39e69002590771423s(this.form);" class="btn">Submit</a> -->
 						<input onclick="FeedBlitz_9feab01d431311e39e69002590771423s(this.form);" type="button" class="btn btnSubmitFooter" value="Submit"/>
 						<input type="hidden" name="na" value="s"/>
 						<input type="hidden" name="nr" value="widget"/>
-					</form> 
+					</form>
 					<script language="Javascript">function FeedBlitz_9feab01d431311e39e69002590771423i(){var x=document.getElementsByName('FeedBlitz_9feab01d431311e39e69002590771423');for(i=0;i<x.length;i++){x[i].EMAIL.style.display='block'; x[i].action='http://www.feedblitz.com/f/f.fbz?AddNewUserDirect';}} function FeedBlitz_9feab01d431311e39e69002590771423s(v){v.submit();}FeedBlitz_9feab01d431311e39e69002590771423i();</script>
 
 				</div>
@@ -117,19 +117,7 @@ $blog_posts = get_posts( $blog_posts_args );
 </div>
 	<!-- /.content -->
 	</div>
-	<!-- /#wrapper -->		
-<?php 
-if( !is_page_template('page-challenges.php') &&
-	!is_page_template('page-challenges-active.php') &&
-	!is_page_template('page-challenges-bugrace.php') &&
-	!is_page_template('page-challenges-data.php') &&
-	!is_page_template('page-challenges-past.php') &&
-	!is_page_template('page-challenges-review.php') 
-  )  
-{
-	wp_footer(); 
-}
-?>
+	<!-- /#wrapper -->
 
 
 <div id="bgModal"></div><!-- background modal -->
@@ -161,19 +149,25 @@ if( !is_page_template('page-challenges.php') &&
 					<label>First Name</label>
 					<input type="text" class="name firstName" placeholder="First Name"/>
 					<span class="err1">Required field</span>
+					<span class="err2">Maximum length is 64 characters</span>
 					<span class="valid"></span>
 				</p>
 				<p class="row">
 					<label>Last Name</label>
 					<input type="text" class="name lastName" placeholder="Last Name"/>
 					<span class="err1">Required field</span>
+					<span class="err2">Maximum length is 64 characters</span>
 					<span class="valid"></span>
 				</p>
 				<p class="row">
 					<label>Handle</label>
 					<input type="text" class="handle name" placeholder="Handle"/>
 					<span class="err1">Required field</span>
-					<span class="err2">Handle already exists</span>
+					<span class="err2">Handle already exists or is invalid</span>
+					<span class="err3">Handle cannot contain a space</span>
+					<span class="err4">Handle cannot consist solely of punctuation</span>
+					<span class="err5">Handle contains invalid characters</span>
+					<span class="err6">Handle cannot start with "admin"</span>
 					<span class="valid"></span>
 				</p>
 				<p class="row">
@@ -443,7 +437,6 @@ if( !is_page_template('page-challenges.php') &&
 					<input type="password" class="pwd" placeholder="Password"/>
 					<span class="err1">Required field</span>
 					<span class="err2">Password strength is weak</span>
-					<span class="err3">Password cannot end in a number</span>
 					<span class="err4">Password must be between 7 and 30 characters</span>
 					<span class="valid">Strong</span>
 				</p>
@@ -463,9 +456,9 @@ if( !is_page_template('page-challenges.php') &&
 					<span class="err2">Password confirmation different from above field</span>
 					<span class="valid"></span>
 				</p>
-				
+
 				<p class="row lSpace">
-					<label><input type="checkbox">I agree to the <a target="_blank" href="/community/how-it-works/terms/">terms of service</a> and <a target="_blank" href="/community/how-it-works/privacy-policy/">privacy policy</a>*</label>
+					<label><input type="checkbox">I agree to the <a target="_blank" href="/community/how-it-works/terms/">terms of service</a> and <a target="_blank" href="/community/how-it-works/privacy-policy/">privacy policy</a></label>
 					<span class="err1">You must agree to the terms</span>
 					<span class="err2">You must agree to the terms</span>
 				</p>
@@ -495,13 +488,14 @@ if( !is_page_template('page-challenges.php') &&
 					<label>Username</label>
 					<input id="username" type="text" class="name" placeholder="Username" />
 					<span class="err1">Your username or password are incorrect</span>
-					<span class="err2">Please input your password</span>
+					<span class="err3">Please input your username</span>
 				</p>
 				<p class="row">
 					<label>Password</label>
 					<input id="password" type="password" class="pwd" placeholder="Password"/>
+					<span class="err4">Please input your password</span>
 				</p>
-				
+
 				<p class="row lSpace">
 					<label><input type="checkbox" />Remember me</label>
 				</p>
@@ -513,7 +507,7 @@ if( !is_page_template('page-challenges.php') &&
 			</form><!-- END .form login -->
 		</div>
 	</div><!-- END #login -->
-	
+
 	<div id="typeTooltip" class="tooltip hide"><div class="inner">
 		<header></header>
 		<div class="data">
@@ -531,19 +525,33 @@ if( !is_page_template('page-challenges.php') &&
 	</div>
 	</div><!-- /.tooltip -->
 
+<?php
 
+  wp_footer();
 
+?>
 <script>
+var socialProviderId = "", socialUserName = "", socialEmail = "",socialProvider = "";
 $(function() {
   var googleProvider = "google-oauth2";
   var facebookProvider = "facebook";
   var twitterProvider = "twitter";
   var githubProvider = "github";
+  <?php
+  $urlFromDiscourse = urldecode( $_GET["url"] );
+  $stateLogin = "http://www.topcoder.com/";
+  if ( preg_match('/sso=(.*)&sig=(.*)$/', $urlFromDiscourse, $matches) ){
+	$sso = $matches[1];
+	$sig = $matches[2];
+	$stateLogin = "http://talk.topcoder.com/session/sso_login?sso=$sso&sig=$sig";
+  }
+
+  ?>
   var auth0Login = new Auth0({
     domain:         'topcoder.auth0.com',
     clientID:       '6ZwZEUo2ZK4c50aLPpgupeg5v2Ffxp9P',
     callbackURL:    'https://www.topcoder.com/reg2/callback.action',
-    state:			'http://www.topcoder.com/',
+    state:			'<?php echo $stateLogin;?>',
     redirect_uri:   'http://www.topcoder.com/'
   });
 
@@ -554,18 +562,23 @@ $(function() {
     state:			'http://www.topcoder.com/',
     redirect_uri:   'http://www.topcoder.com/'
   });
-  
-  var socialProviderId = "", socialUserName = "", socialEmail = "",socialProvider = "";
+
 	auth0Register.parseHash(window.location.hash, function (profile, id_token, access_token, state) {
 			socialProvider = profile.identities[0].connection;
 			var firstName = "" , lastName = "", handle = "", email = "";
-			if(socialProvider === googleProvider || socialProvider === facebookProvider){
+			if(socialProvider === googleProvider) {
 				firstName = profile.given_name;
 				lastName = profile.family_name;
 				handle = profile.nickname;
 				email = profile.email;
-				socialProviderId = socialProvider === googleProvider ? 2 : 1;
-			} else if(socialProvider === twitterProvider){
+				socialProviderId = 2;
+      } else if (socialProvider === facebookProvider) {
+				firstName = profile.given_name;
+				lastName = profile.family_name;
+				handle = firstName + '.' + lastName;
+				email = profile.email;
+        socialProviderId = 1;
+      } else if (socialProvider === twitterProvider){
 				var splitName = profile.name.split(" ");
 				firstName = splitName[0];
 				if(splitName.length > 1){
@@ -581,7 +594,7 @@ $(function() {
 			}
 			socialUserName = handle;
 			socialUserId = profile.user_id.split('|')[1];
-			socialEmail = profile.email;				
+			socialEmail = profile.email;
      $("#registerForm .firstName").val(firstName);
      $("#registerForm .lastName").val(lastName);
      $("#registerForm .handle").val(handle);
@@ -591,91 +604,96 @@ $(function() {
      $('input.pwd:password').trigger('keyup');
      $('#register form.register input.email:text').trigger('keyup');
      $('#register form.register input.name:text').trigger('keyup');
+     $('#register form.register input.handle:text').trigger('keyup');
+     $('#register form.register input.handle:text').trigger('blur');
      $('#register form.register input:checkbox').trigger('change');
      $('#register input:password').on('keyup');
      $('select').on('change');
-	 
+
   });
-  
+
   $('.register-google').on('click', function() {
     auth0Register.login({
 		connection: googleProvider,
         state:      'http://www.topcoder.com/',
         response_type: 'token'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
 	});
- 
+
   $('.register-facebook').on('click', function() {
-    auth0Register.login({connection: facebookProvider, 
+    auth0Register.login({connection: facebookProvider,
     state:      'http://www.topcoder.com/',
     response_type: 'token'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.register-twitter').on('click', function() {
-    auth0Register.login({connection: twitterProvider, 
+    auth0Register.login({connection: twitterProvider,
     state:      'http://www.topcoder.com/',
     response_type: 'token'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.register-github').on('click', function() {
     auth0Register.login({connection: githubProvider,
     state:      'http://www.topcoder.com/',
     response_type: 'token'});  // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.signin-google').on('click', function() {
     auth0Login.login({
 		connection: 'google-oauth2',
         state:      'http://www.topcoder.com/'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
 	});
- 
+
   $('.signin-facebook').on('click', function() {
-    auth0Login.login({connection: 'facebook', 
+    auth0Login.login({connection: 'facebook',
     state:      'http://www.topcoder.com/'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.signin-twitter').on('click', function() {
-    auth0Login.login({connection: 'twitter', 
+    auth0Login.login({connection: 'twitter',
     state:      'http://www.topcoder.com/'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.signin-github').on('click', function() {
     auth0Login.login({connection: 'github',
     state:      'http://www.topcoder.com/'});  // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.signin-etc').on('click', function() {
-    auth0Login.login({connection: 'connection-name', 
+    auth0Login.login({connection: 'connection-name',
     state:      'http://www.topcoder.com/'}); // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
   });
- 
+
   $('.signin-db').on('click', function() {
+    var empty = false;
+    if ($('#username').val().trim()=='') {
+      empty = true;
+      $('#loginForm span.err3').show();
+      $('#username').addClass('invalid');
+    }
+    if ($('#password').val().trim()=='') {
+      empty = true;
+      $('#loginForm span.err4').show();
+      $('#password').addClass('invalid');
+    }
+    if (empty) return;
     auth0Login.login({
-      connection: 'LDAP', 
+      connection: 'LDAP',
       state:      'http://www.topcoder.com/', // this tells Auth0 to send the user back to the main site after login. Please replace the var for current page URL.
-      username: document.getElementById('username').value, 
+      username: document.getElementById('username').value,
       password: document.getElementById('password').value
     },
     function (err) {
       // invalid user/password
-	 //alert(err);	 
-	 $('#loginForm .btnSubmit').html('Login'); 
-	 $('#loginForm .err1').show().html('Incorrect Username or Password');
+      //alert(err);
+      $('#loginForm .btnSubmit').html('Login');
+      $('#loginForm .err1').show().html('Incorrect Username or Password')
+        .addClass('invalid');
     });
   });
 });
 </script>
 
-
-
-
-
 </div>
-
-
-
-
-
-
 
 </body>
 

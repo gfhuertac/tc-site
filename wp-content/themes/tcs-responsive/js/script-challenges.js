@@ -94,7 +94,6 @@ appChallenges = {
             $(this).replaceWith('<a href="javascript:;" class="btn">Submit</a>');
         });
 
-        // disable and enable elements
         $('.otherOpts input:checkbox').on('change', function() {
             var row = $(this).closest('.row');
             if (row.hasClass('subRow1')) {
@@ -136,7 +135,7 @@ appChallenges = {
 
         /* view all records */
         $('.dataChanges .viewAll').off().on(ev, function() {
-            postPerPage = -1;
+            postPerPage = 1000;
 
             if( reviewType == "contest") {
                 if(contest_type=="design"||contest_type=="develop") {
@@ -319,34 +318,43 @@ appChallenges = {
 
     //Calander
     calendar: function() {
+        var datePickerTo = $(".datepicker.to");
 
-        $(".datepicker.to").datepicker({
+        datePickerTo.datepicker({
             showOn: 'both',
-            buttonImage: stylesheet_dir+'/i/ico-cal.png',
+            buttonImage: stylesheet_dir + '/i/ico-cal.png',
             buttonImageOnly: true,
-            positionAdjust: true,
-            dateFormat: 'mm.dd.yy',
+            dateFormat: 'yy-mm-dd',
             buttonText: "",
-            disabled: 'disabled',
             onSelect: function(selectedDate) {
                 $(".datepicker.from").datepicker("option", "maxDate", selectedDate);
             }
-        })
-        $(".datepicker.to").closest('.row').addClass('isDisabled');
+        });
 
-        $(".datepicker.from").datepicker({
+        var row = datePickerTo.closest('.row');
+        $('.datepicker', row).datepicker("option", "disabled", true);
+        $('img', row).css('opacity',1).css('opacity',0.5).css('filter','alpha(opacity=50)');
+        $('img', row).closest('.row').addClass('isDisabled');
+        $('input:text, select', row).attr('disabled', 'disabled');
+
+        var datePickerFrom = $(".datepicker.from");
+
+        datePickerFrom.datepicker({
             showOn: 'both',
-            buttonImage: stylesheet_dir+'/i/ico-cal.png',
+            buttonImage: stylesheet_dir + '/i/ico-cal.png',
             buttonImageOnly: true,
-            positionAdjust: true,
-            dateFormat: 'mm.dd.yy',
-            buttonText: "",
-            disabled: 'disabled',
+            dateFormat: 'yy-mm-dd',
             onSelect: function(selectedDate) {
-                $(".datepicker.to").datepicker("option", "minDate", selectedDate);
+                datePickerFrom.datepicker("option", "minDate", selectedDate);
             }
-        })
-        $(".datepicker.from").closest('.row').addClass('isDisabled');
+        });
+        datePickerFrom.closest('.row').addClass('isDisabled');
+
+        row = datePickerFrom.closest('.row');
+        $('.datepicker', row).datepicker("option", "disabled", true);
+        $('img', row).css('opacity',1).css('opacity',0.5).css('filter','alpha(opacity=50)');
+        $('img', row).closest('.row').addClass('isDisabled');
+        $('input:text, select', row).attr('disabled', 'disabled');
     },
 
     getTrackSymbol: function(type){
@@ -414,20 +422,17 @@ appChallenges = {
         return trackName;
     },
     isDesignContest: function(contestType){
-        if( contestType=="Web Design" ||
-            contestType=="Widget or Mobile Screen Design" ||
-            contestType=="Wireframes" ||
-            contestType=="Idea Generation" ||
-            contestType=="Print\/Presentation" ||
-            contestType=="Banners\/Icons" ||
-            contestType=="Logo Design" ||
-            contestType=="Studio Other" ||
-            contestType=="Front-End Flash" ||
-            contestType=="Application Front-End Design" )
-        {
-            return true;
-        }
-        return false;
+        return contestType == "Web Design" ||
+          contestType == "Widget or Mobile Screen Design" ||
+          contestType == "Wireframes" ||
+          contestType == "Idea Generation" ||
+          contestType == "Print\/Presentation" ||
+          contestType == "Banners\/Icons" ||
+          contestType == "Logo Design" ||
+          contestType == "Studio Other" ||
+          contestType == "Front-End Flash" ||
+          contestType == "Application Front-End Design";
+
     },
 
 
@@ -503,6 +508,8 @@ appChallenges = {
             $('tbody', table).append(row);
           });
           app.initZebra(table);
+        } else {
+          app.addEmptyResult(table);
         }
 
         $('.loading').hide();
@@ -664,10 +671,22 @@ appChallenges = {
         var startDate = $("#startDate").val();
         var endDate = $("#endDate").val();
         if( $.trim(startDate)!="" && $('#fSDate').prop('checked') ) {
-            param.startDate = startDate;
+            param.submissionEndFrom = startDate;
         }
         if( $.trim(endDate)!="" && $('#fEDate').prop('checked') ) {
-            param.endDate = endDate;
+            param.submissionEndTo = endDate;
+        }
+
+        // if submission from date is blank form to date isn't
+        if (!param.submissionEndFrom && param.submissionEndTo) {
+            param.submissionEndFrom = app.formatDateApi(new Date(1));
+        }
+
+        if (!param.submissionEndTo && param.submissionEndFrom) {
+            // 60 days from today
+            var futureDate = 60 * 24 * 60 * 60 * 1000;
+            var curDate = Date.now();
+            param.submissionEndTo = app.formatDateApi(new Date(curDate + futureDate));
         }
 
         var challengesRadio = $("input:radio[name ='radioFilterChallenge']:checked").val();
@@ -855,6 +874,10 @@ appChallenges = {
         }
     },
 
+    addEmptyResult: function(table) {
+      $(table).html("<div><h3>There are no active challenges under this category. Please check back later</h3></div>");
+    },
+
     // getGridview Blocks
     getAllContestGrid: function(gridEl, data, records2Disp,isAppend, isDataScience) {
         isAppend = typeof isAppend == 'undefined' ? false : isAppend;
@@ -1035,6 +1058,9 @@ appChallenges = {
             $('tbody', table).append(row);
           });
           app.initZebra(table);
+        }  else {
+          app.addEmptyResult(table);
+          $('.loading').hide();
         }
     },
 
@@ -1124,6 +1150,8 @@ appChallenges = {
               }, 2000);
             }, 5);
           });
+        }   else {
+          app.addEmptyResult(gridEl);
         }
     },
 
@@ -1199,6 +1227,8 @@ appChallenges = {
             $('tbody', table).append(row);
           });
           app.initZebra(table);
+        } else {
+          app.addEmptyResult(table);
         }
 
         $('.loading').hide();
@@ -1235,6 +1265,8 @@ appChallenges = {
             $('tbody', table).append(row);
           });
           app.initZebra(table);
+        } else {
+          app.addEmptyResult(table);
         }
 
         $('.loading').hide();
@@ -1280,6 +1312,18 @@ appChallenges = {
         return dateStr;
     },
 
+    /**
+     * Format a date for the API
+     *
+     * @param date Date
+     * @return string
+     */
+    formatDateApi: function(date) {
+      return date.getFullYear() + "-" +
+        date.getMonth() + "-" +
+        date.getDate();
+    },
+
     //format time left
     formatTimeLeft: function(seconds, grid) {
         var sep = (grid)?'':' ';
@@ -1301,7 +1345,7 @@ appChallenges = {
     //get contest link url
     getContestLinkUrl: function(projectId,contestType) {
         return siteurl+"/challenge-details/"+projectId+"/?type="+contestType;
-    },
+    }
 }
 
 /**

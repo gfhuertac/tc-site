@@ -1,5 +1,6 @@
 $(function () {
 
+
   // modal
   /**
    * show modal
@@ -29,6 +30,18 @@ $(function () {
     centerModal();
   });
 
+  $('#username').keyup(function() {
+    $('#loginForm span.err3').hide();
+    $('#loginForm span.err1').hide();
+    $(this).removeClass('invalid');
+  });
+
+  $('#password').keyup(function() {
+    $('#loginForm span.err1').hide();
+    $('#loginForm span.err4').hide();
+    $(this).removeClass('invalid');
+  });
+
   $('.btnRegister').on('click', function () {
     //document.getElementById("registerForm").reset();
     showModal('#register');
@@ -52,10 +65,7 @@ $(function () {
   /* validation */
 
   function isValidEmailAddress(emailAddress) {
-    var pattern = new RegExp("\\b(^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@([A-Za-z0-9-])+((\\.com)"
-    + "|(\\.net)|(\\.org)|(\\.info)|(\\.edu)|(\\.mil)|(\\.gov)|(\\.biz)|(\\.ws)|(\\.us)|(\\.tv)|(\\.cc)"
-    + "|(\\.aero)|(\\.arpa)|(\\.coop)|(\\.int)|(\\.jobs)|(\\.museum)|(\\.name)|(\\.pro)|(\\.travel)|(\\.nato)"
-    + "|(\\..{2,3})|(\\.([A-Za-z0-9-])+\\..{2,3}))$)\\b");
+    var pattern = new RegExp("(^[\\+_A-Za-z0-9-]+(\\.[\\+_A-Za-z0-9-]+)*@.+(\\.[A-Za-z]{2,}$))");
     return pattern.test(emailAddress);
   };
 
@@ -64,7 +74,6 @@ $(function () {
 
     var result = 0;
     if (pwd.trim()=='') return 0;
-    if (pwd[pwd.length-1].match(/\d/)) return -1;
     if (pwd.length < 7) return -2;
     if (pwd.length > 30) return -3;
 
@@ -112,14 +121,73 @@ $(function () {
     }
   });
 
-  $('#register form.register input.name:text').on('keyup', function () {
-    if ($(this).val() != "") {
+  $('#register form.register input.name.lastName:text').on('keyup', function () {
+    var text = $(this).val();
+    if (text.length > 64) {
+      $(this).parents(".row").find("span.valid").hide();
+      $(this).addClass('invalid');
+      $(this).parents(".row").find("span.err2").show();
+
+    } else if (text != '') {
       $(this).parents(".row").find("span.valid").css("display", "inline-block");
       $(this).closest('.row').find('input:text').removeClass('invalid');
       $(this).closest('.row').find('span.err1').hide();
       $(this).closest('.row').find('span.err2').hide();
     } else {
       $(this).parents(".row").find("span.valid").hide();
+    }
+  });
+
+  $('#register form.register input.name.firstName:text').on('keyup', function () {
+    var text = $(this).val();
+    if (text.length > 64) {
+      $(this).parents(".row").find("span.valid").hide();
+      $(this).addClass('invalid');
+      $(this).parents(".row").find("span.err2").show();
+
+    } else if (text != '') {
+      $(this).parents(".row").find("span.valid").css("display", "inline-block");
+      $(this).closest('.row').find('input:text').removeClass('invalid');
+      $(this).closest('.row').find('span.err1').hide();
+      $(this).closest('.row').find('span.err2').hide();
+    } else {
+      $(this).parents(".row").find("span.valid").hide();
+    }
+  });
+
+  $('#register form.register input.handle:text').on('keyup', function () {
+    var invalid = false;
+    $(this).parents(".row").find("span.valid").hide();
+    $(this).closest('.row').find('span.err1').hide();
+    $(this).closest('.row').find('span.err2').hide();
+    $(this).closest('.row').find('span.err3').hide();
+    $(this).closest('.row').find('span.err4').hide();
+    $(this).closest('.row').find('span.err5').hide();
+    $(this).closest('.row').find('span.err6').hide();
+    var text = $(this).val();
+    if (text.indexOf(' ') != -1) {
+      // can't contain spaces
+      $(this).closest('.row').find('span.err3').show();
+      invalid = true;
+
+    } else if (text.match(/^[\-\_\.\{\}\[\]]+$/)) {
+      // can't consist solely of punctuation
+      $(this).closest('.row').find('span.err4').show();
+      invalid = true;
+
+    } else if (!text.match(/^[\w\d\-\_\.\{\}\[\]]*$/)) {
+      // must be all valid chars
+      $(this).closest('.row').find('span.err5').show();
+      invalid = true;
+    } else if (text.toLowerCase().match(/^admin/)) {
+      // can't start with 'admin'
+      $(this).closest('.row').find('span.err6').show();
+      invalid = true;
+    }
+    if (!invalid) {
+      $('#register form.register input.handle:text').removeClass('invalid');
+    } else {
+      $('#register form.register input.handle:text').addClass('invalid');
     }
   });
 
@@ -168,25 +236,74 @@ $(function () {
     }
   });
 
+  var handleIsFree = true;
+  var handleValidationAttempted = false;
+  var handleDeferred = $.Deferred();
+  function validateHandle() {
+    handleValidationAttempted = true;
+    var handle = $('#register form.register input.name.handle:text').val();
+    $.ajax({
+      type: 'GET',
+      data: {
+        handle: handle,
+        action: 'get_handle_validity'
+      },
+      dataType: 'json',
+      url: ajaxUrl,
+      success: function(data) {
+        if (data.error) {
+          handleIsFree = false;
+          var node = $('#register form.register input.name.handle:text');
+          $('input.handle').closest('.row').find('.err2').show();
+          $('input.handle').closest('.row').find('input:text').addClass('invalid');
+          $('input.handle').closest('.row').find('span.valid').hide();
+          handleDeferred.resolve();
+        } else {
+          handleIsFree = true;
+          var node = $('#register form.register input.name.handle:text');
+          node.parents(".row").find("span.valid").css("display", "inline-block");
+          node.closest('.row').find('input:text').removeClass('invalid');
+          node.closest('.row').find('span.err1').hide();
+          node.closest('.row').find('span.err2').hide();
+          handleDeferred.resolve();
+        }
+      }
+    }).fail(function() {
+      console.log('fail with '+handleState.handle);
+    });
+  }
+  $('#register form.register input.name.handle:text').blur(function() {
+    if ($(this).val()=='' || $('input.handle').closest('.row').find('.err3,.err4,.err5,.err6').is(':visible')) return;
+    validateHandle();
+    handleDeferred = $.Deferred();
+  });
+
   $('select').customSelect();
 
   $('#register a.btnSubmit').on('click', function () {
     var isValid = true;
+    if (!handleValidationAttempted && !$('input.handle').closest('.row').find('.err3,.err4,.err5,.err6').is(':visible')) validateHandle();
+
     var frm = $('#register form.register');
-    $('.invalid', frm).removeClass('invalid');
-    $('.err1,.err2', frm).hide();
+    var handleInvalid = $('input.handle').closest('.row').find('.invalid');
+    $('.invalid', frm).not(handleInvalid).removeClass('invalid');
+    var handleErr = $('input.handle').closest('.row').find('.err2,.err3,.err4,.err5,.err6');
+    $('.err1,.err2', frm).not(handleErr).hide();
     $('input:text', frm).each(function () {
       if ($.trim($(this).val()) == "") {
         $(this).closest('.row').find('.err1').show();
         $(this).closest('.row').find('input:text').addClass('invalid');
         isValid = false;
-      } else if ($(this).hasClass("handle") && $.trim($(this).val()) == "user01") {
-        $(this).closest('.row').find('.err2').show();
-        $(this).closest('.row').find('input:text').addClass('invalid');
-        $(this).closest('.row').find('span.valid').hide();
-        isValid = false;
       }
     });
+    $('input.firstName,input.lastName').each(function () {
+      if ($(this).val().length > 64) {
+        isValid = false;
+        $(this).addClass('invalid');
+        $(this).closest('.row').find('.err2').show();
+      }
+    });
+
     $('select', frm).each(function () {
       if ($.trim($(this).val()) == "") {
         $(this).closest('.row').find('.err1').show();
@@ -219,11 +336,6 @@ $(function () {
           $(this).closest('.row').find('.err2').show();
           $(this).closest('.row').find('input:password').addClass('invalid');
           isValid = false;
-        } else if (pwdStrength($('input.pwd:password').val()) == -1) {
-          frm.find(".err3.red").show();
-          $(this).closest('.row').find('.err3').show();
-          $(this).closest('.row').find('input:password').addClass('invalid');
-          isValid = false;
         } else if (pwdStrength($('input.pwd:password').val()) < -1) {
           frm.find(".err4.red").show();
           $(this).closest('.row').find('.err4').show();
@@ -248,48 +360,70 @@ $(function () {
         isValid = false;
       }
     });
-    if (isValid && $('#register a.btnSubmit').html() == 'Sign Up') {
-      $('#register a.btnSubmit').html('Please Wait');
-      var fields = {
-        firstName: $('#registerForm input.firstName').val(),
-        lastName: $('#registerForm input.lastName').val(),
-        handle: $('#registerForm input.handle').val(),
-        country: $('#registerForm select#selCountry').val(),
-        email: $('#registerForm input.email').val()
-      }
-      if (socialProviderId !== "") {
-        fields.socialProviderId = socialProviderId;
-        fields.socialUserId = socialUserId;
-        fields.socialProvider = socialProvider,
-          fields.socialUserName = socialUserName;
-        fields.socialEmail = socialEmail;
-        fields.socialEmailVerified = "t";
-      } else {
-        fields.password = $('#registerForm  input.pwd').val();
-      }
 
-      $.post(ajaxUrl + '?action=post_register', fields, function (data) {
-        if (data.code == "200") {
-          $('.modal').hide();
-          $("#thanks h2").html('Thanks for Registering');
-          $("#thanks p").html('We have sent you an email with activation instructions.<br>If you do not receive that email within 1 hour, please email <a href="mailto:support@topcoder.com">support@topcoder.com</a>');
-          showModal('#thanks');
-          $('#registerForm .invalid').removeClass('invalid');
-          $('#registerForm .valid').removeClass('valid');
-          $('.err1,.err2', frm).hide();
-          resetRegisterFields();
-        }
-        else {
-          //$('.modal').hide();
-          //$("#thanks h2").html('Error');
-          //$("#thanks p").html(data.description);
-          //showModal('#thanks');
-          alert(data.description);
-
-        }
-        $('#register .btnSubmit').html('Sign Up');
-      }, "json");
+    var handle = $('#register form.register input.name.handle:text').val();
+    if (handle=='') {
+      $('input.handle').closest('.row').find('.err1').show();
+      $('input.handle').closest('.row').find('input:text').addClass('invalid');
+      $('input.handle').closest('.row').find('span.valid').hide();
+      isValid = false;
     }
+    if ($('input.handle').closest('.row').find('.err3,.err4,.err5,.err6').is(':visible'))
+      isValid = false;
+    if (!isValid) return;
+
+    handleDeferred.done(function() {
+
+      if (!handleIsFree) {
+        $('input.handle').closest('.row').find('.err2').show();
+        $('input.handle').closest('.row').find('input:text').addClass('invalid');
+        $('input.handle').closest('.row').find('span.valid').hide();
+        isValid = false;
+      }
+      if (isValid && $('#register a.btnSubmit').html() == 'Sign Up') {
+        $('#register a.btnSubmit').html('Please Wait');
+        $('#register .btnSubmit').addClass('pleaseWait');
+        var fields = {
+          firstName: $('#registerForm input.firstName').val(),
+          lastName: $('#registerForm input.lastName').val(),
+          handle: $('#registerForm input.handle').val(),
+          country: $('#registerForm select#selCountry').val(),
+          email: $('#registerForm input.email').val()
+        }
+        if ((typeof socialProviderId != 'undefined') && socialProviderId !== "") {
+          fields.socialProviderId = socialProviderId;
+          fields.socialUserId = socialUserId;
+          fields.socialProvider = socialProvider,
+            fields.socialUserName = socialUserName;
+          fields.socialEmail = socialEmail;
+          fields.socialEmailVerified = "t";
+        } else {
+          fields.password = $('#registerForm  input.pwd').val();
+        }
+
+        $.post(ajaxUrl + '?action=post_register', fields, function (data) {
+          if (data.code == "200") {
+            $('.modal').hide();
+            $("#thanks h2").html('Thanks for Registering');
+            $("#thanks p").html('We have sent you an email with activation instructions.<br>If you do not receive that email within 1 hour, please email <a href="mailto:support@topcoder.com">support@topcoder.com</a>');
+            showModal('#thanks');
+            $('#registerForm .invalid').removeClass('invalid');
+            $('#registerForm .valid').removeClass('valid');
+            $('.err1,.err2', frm).hide();
+            resetRegisterFields();
+          }
+          else {
+            //$('.modal').hide();
+            //$("#thanks h2").html('Error');
+            //$("#thanks p").html(data.description);
+            //showModal('#thanks');
+            alert(data.description);
+
+          }
+          $('#register .btnSubmit').html('Sign Up');
+        }, "json");
+      }
+    });
   });
 
   $('#login a.btnSubmit').on('click', function () {
