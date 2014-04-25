@@ -1,6 +1,7 @@
 var pageSize = 8;
 var sortColumn = "";
 var sortOrder = "";
+var ApiData = {};
 
 /**
  * Challenges function
@@ -21,7 +22,7 @@ appChallenges = {
         });
         $('.userWidget').on(ev, function(e) {
             e.stopPropagation();
-        })
+        });
 
         if ($('.tooltip').length > 0) {
             app.tooltip();
@@ -32,22 +33,24 @@ appChallenges = {
         app.calendar();
         app.bindEvents();
     },
-    initAjaxData: function(){
-        if($('.dataChanges .viewAll').length <=0 || !$('.dataChanges .viewAll').is(':visible')){
-            pageSize=10000;
+    initAjaxData: function() {
+        if ($('.dataChanges .viewAll').length <= 0 || !$('.dataChanges .viewAll').is(':visible')) {
+            pageSize = 10000;
         }
 
-        if( typeof(reviewType) != "undefined" ) {
-            if( reviewType == "contest" ) {
-                app.getDesignContests($('.tcoTable'), currentPage);
-            }
-            else if( reviewType == "review" ) {
-                if( contest_type=="design" || contest_type=="develop"  ) {
+        if (typeof(reviewType) != "undefined") {
+            if (reviewType == "contest") {
+                if (contest_type == 'data') {
+                    app.getDataChallenges($('.tcoTable'), currentPage);
+                } else {
+                    app.getDesignContests($('.tcoTable'), currentPage);
+                }
+            } else if (reviewType == "review") {
+                if (contest_type == "design" || contest_type == "develop") {
                     app.getReview($('.tcoTable'), currentPage);
                 }
-            }
-            else if( reviewType == "data" ) {
-                app.getDataChallenges($('.tcoTable'), 1);
+            } else if (reviewType == "data") {
+                app.getDataChallenges($('.tcoTable'), currentPage);
             }
         }
     },
@@ -55,8 +58,8 @@ appChallenges = {
 
         // filter check/ uncheck
 
-        $('.filterOpts input:checkbox').on('change',function(){
-            if(!$(this).is(':checked') && !$(this).hasClass('all')){
+        $('.filterOpts input:checkbox').on('change', function() {
+            if (!$(this).is(':checked') && !$(this).hasClass('all')) {
                 $('.filterOpts .all').prop("checked", false);
             }
         });
@@ -101,12 +104,12 @@ appChallenges = {
             }
             if ($(this).is(':checked')) {
                 $('.datepicker', row).datepicker("option", "disabled", false);
-                $('img', row).css('opacity',1).css('filter','alpha(opacity=100)');
+                $('img', row).css('opacity', 1).css('filter', 'alpha(opacity=100)');
                 $('img', row).closest('.row').removeClass('isDisabled');
                 $('input:text, select', row).removeAttr('disabled');
             } else {
                 $('.datepicker', row).datepicker("option", "disabled", true);
-                $('img', row).css('opacity',1).css('opacity',0.5).css('filter','alpha(opacity=50)');
+                $('img', row).css('opacity', 1).css('opacity', 0.5).css('filter', 'alpha(opacity=50)');
                 $('img', row).closest('.row').addClass('isDisabled');
                 $('input:text, select', row).attr('disabled', 'disabled');
             }
@@ -117,7 +120,7 @@ appChallenges = {
             $(this).closest('.searchFilter').fadeOut('fast');
             $('.advSearch').removeClass('isActive');
         });
-        $('.searchFilter .btnApply').on(ev,function(){
+        $('.searchFilter .btnApply').on(ev, function() {
             app.initAjaxData();
             $(this).closest('.searchFilter').fadeOut('fast');
             $('.advSearch').removeClass('isActive');
@@ -137,15 +140,13 @@ appChallenges = {
         $('.dataChanges .viewAll').off().on(ev, function() {
             postPerPage = 1000;
 
-            if( reviewType == "contest") {
-                if(contest_type=="design"||contest_type=="develop") {
+            if (reviewType == "contest") {
+                if (contest_type == "design" || contest_type == "develop") {
+                    app.getDesignContests($('.tcoTable'), 1);
+                } else if (listType == "AllActive") {
                     app.getDesignContests($('.tcoTable'), 1);
                 }
-                else if(listType=="AllActive") {
-                    app.getDesignContests($('.tcoTable'), 1);
-                }
-            }
-            else if( reviewType == "review" ) {
+            } else if (reviewType == "review") {
                 app.getReview($('.tcoTable'), 1);
             }
 
@@ -155,39 +156,33 @@ appChallenges = {
 
         /* view next */
         $('.dataChanges').off().on(ev, '.nextLink', function(e) {
-            var nextPage = currentPage+1;
+            var nextPage = currentPage + 1;
 
-            if( reviewType == "contest") {
-                if(contest_type=="design"||contest_type=="develop") {
+            if (reviewType == "contest") {
+                if (contest_type == "design" || contest_type == "develop") {
+                    app.getDesignContests($('.tcoTable'), nextPage);
+                } else if (listType == "AllActive") {
                     app.getDesignContests($('.tcoTable'), nextPage);
                 }
-                else if(listType=="AllActive") {
-                    app.getDesignContests($('.tcoTable'), nextPage);
-                }
-            }
-            else if( reviewType == "review" ) {
+            } else if (reviewType == "review") {
                 app.getReview($('.tcoTable'), nextPage);
-            }
-            else if( reviewType == "data" ) {
+            } else if (reviewType == "data") {
                 app.getDataChallenges($('.tcoTable'), nextPage);
             }
             e.preventDefault();
         });
         $('.dataChanges').on(ev, '.prevLink', function(e) {
-            var prevPage = currentPage-1;
+            var prevPage = currentPage - 1;
 
-            if( reviewType == "contest") {
-                if(contest_type=="design"||contest_type=="develop") {
+            if (reviewType == "contest") {
+                if (contest_type == "design" || contest_type == "develop") {
+                    app.getDesignContests($('.tcoTable'), prevPage);
+                } else if (listType == "AllActive") {
                     app.getDesignContests($('.tcoTable'), prevPage);
                 }
-                else if(listType=="AllActive") {
-                    app.getDesignContests($('.tcoTable'), prevPage);
-                }
-            }
-            else if( reviewType == "review" ) {
+            } else if (reviewType == "review") {
                 app.getReview($('.tcoTable'), prevPage);
-            }
-            else if( reviewType == "data" ) {
+            } else if (reviewType == "data") {
                 app.getDataChallenges($('.tcoTable'), prevPage);
             }
             e.preventDefault();
@@ -205,32 +200,116 @@ appChallenges = {
             var getSortColumn = $(this).attr("data-placeholder");
             var getSortOrder = $(this).hasClass("asc") ? "desc" : "asc";
 
-            if(!$(this).hasClass("noSort")) {
+            if (!$(this).hasClass("noSort")) {
                 sortColumn = getSortColumn;
                 sortOrder = getSortOrder;
-                if( reviewType == "contest") {
-                    if(contest_type=="design"||contest_type=="develop") {
-                        app.getDesignContests($('.tcoTable'), currentPage, app.callbackAfterSort($(this)) );
+                if (reviewType == "contest") {
+                    if (contest_type == "design" || contest_type == "develop") {
+                        if (postPerPage >= apiData.total) {
+                            apiData = app.apiDataSort(apiData, sortColumn, sortOrder);
+                            app.apiDataView(apiData, $('.tcoTable'), app.callbackAfterSort($(this)));
+                        } else {
+                            app.getDesignContests($('.tcoTable'), currentPage, app.callbackAfterSort($(this)));
+                        }
+                    } else if (listType == "AllActive") {
+                        app.getDesignContests($('.tcoTable'), currentPage, app.callbackAfterSort($(this)));
                     }
-                    else if(listType=="AllActive") {
-                        app.getDesignContests($('.tcoTable'), currentPage, app.callbackAfterSort($(this)) );
-                    }
-                }
-                else if( reviewType =="review" ) {
-                    app.getReview($('.tcoTable'), currentPage, app.callbackAfterSort($(this)) );
+                } else if (reviewType == "review") {
+                    app.getReview($('.tcoTable'), currentPage, app.callbackAfterSort($(this)));
                 }
 
             }
 
         });
     },
+    //sort data from previous api call so we dont have to make a new one, useful for 'view all' datasets
+    apiDataSort: function(data, sortColumn, sortOrder) {
+        switch(sortColumn) {
+            case 'challengeType':
+            case 'challengeName':
+            case 'currentStatus':
+                data.data.sort(function(a, b) {
+                    if (sortOrder === 'asc') {
+                        if (a[sortColumn] > b[sortColumn]) {
+                            return 1;
+                        }
+                        if (a[sortColumn] < b[sortColumn]) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    }
+                    if (a[sortColumn] < b[sortColumn]) {
+                        return 1;
+                    }
+                    if (a[sortColumn] > b[sortColumn]) {
+                        return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+                break;
+            case 'postingDate':
+                data.data.sort(function(a, b) {
+                    a = new Date(a[sortColumn]);
+                    b = new Date(b[sortColumn]);
+                    if (sortOrder === 'asc') {
+                        return a<b ? -1 : a>b ? 1 : 0;
+                    }
+                    return a>b ? -1 : a<b ? 1 : 0;
+                });
+                break;
+            case 'challengeId':
+            case 'projectId':
+            case 'forumId':
+            case 'numSubmissions':
+            case 'numRegistrants':
+            case 'numberOfCheckpointsPrizes':
+            case 'digitalRunPoints':
+                if (sortOrder === 'asc') {
+                    data.data.sort(function(a, b) {
+                        return (a[sortColumn] - b[sortColumn]);
+                    });
+                }
+                data.data.sort(function(a, b) {
+                    return (b[sortColumn] - a[sortColumn]);
+                });
+                break;
+            default:
+                break;
+        }
+        return data;
+    },
+    apiDataView: function(data, table, callback) {
+         // If contest type
+        if (!isBugRace) {
+            if (typeof listType !== "undefined" && listType == "Past") {
+                app.getDesignPastContestTable(table, data, null);
+            } else if (typeof listType !== "undefined" && listType == "AllActive") {
+                app.getAllContestTable(table, data, null);
+                app.getAllContestGrid($('#gridView .contestGrid'), data, (null + 1));
+                app.getDataLandingContests($('.tcoTable'), 1);
+            } else if (typeof listType !== "undefined" && listType == "Upcoming") {
+                app.getDesignUpcomingContestTable(table, data, null);
+                app.getDesignUpcomingContestGrid($('#gridView .contestGrid'), data, (null + 1));
+            } else {
+                app.getDesignContestTable(table, data, null);
+                app.getDesignContestGrid($('#gridView .contestGrid'), data, (null + 1));
+            }
+        } else { // If bug race type
+            app.getBugraceTable(table, data, null);
+        }
+        /* call back */
+        if (callback != null && callback != "") {
+            callback();
+        }
+    },
     callbackAfterSort: function(ev) {
         var getSortColumn = ev.attr("data-placeholder");
         var getSortOrder = ev.hasClass("asc") ? "desc" : "asc";
-        if(getSortOrder=="asc"&& !ev.hasClass("asc")) {
+        if (getSortOrder == "asc" && !ev.hasClass("asc")) {
             ev.addClass("asc");
-        }
-        else {
+        } else {
             ev.removeClass("asc");
         }
     },
@@ -243,11 +322,11 @@ appChallenges = {
             $('header', tt).html($('.tipT', $(this)).html());
             $('.contestTy', tt).html($('.tipC', $(this)).html());
 
-            if($(this).hasClass('itco')){
-                var tempTcoTooltipTitle = typeof(tcoTooltipTitle) != "undefined" ? tcoTooltipTitle : "TCO-14";
-                var tempTcoTooltipMessage = typeof(tcoTooltipMessage) != "undefined" ? tcoTooltipMessage : "Egalible for TCO14";
+            if ($(this).hasClass('itco')) {
+                var tempTcoTooltipTitle = typeof tcoTooltipTitle !== "undefined" ? tcoTooltipTitle : "TCO-14";
+                var tempTcoTooltipMessage = typeof tcoTooltipMessage !== "undefined" ? tcoTooltipMessage : "Egalible for TCO14";
                 $('header', tt).html(tempTcoTooltipTitle);
-                    $('.contestTy', tt).html(tempTcoTooltipMessage);
+                $('.contestTy', tt).html(tempTcoTooltipMessage);
             }
 
             tt.css('z-index', '-1').stop().fadeIn();
@@ -268,7 +347,7 @@ appChallenges = {
         });
         $('.dataTable, .contestGrid').on('mouseleave', '.colType .ico, .coleSub .subs, .ico.trackType, a .itco', function() {
             var tt = $('#typeTooltip');
-            tt.css('top',-20000);
+            tt.css('top', -20000);
         });
 
         //winner tooltip
@@ -333,7 +412,7 @@ appChallenges = {
 
         var row = datePickerTo.closest('.row');
         $('.datepicker', row).datepicker("option", "disabled", true);
-        $('img', row).css('opacity',1).css('opacity',0.5).css('filter','alpha(opacity=50)');
+        $('img', row).css('opacity', 1).css('opacity', 0.5).css('filter', 'alpha(opacity=50)');
         $('img', row).closest('.row').addClass('isDisabled');
         $('input:text, select', row).attr('disabled', 'disabled');
 
@@ -352,97 +431,85 @@ appChallenges = {
 
         row = datePickerFrom.closest('.row');
         $('.datepicker', row).datepicker("option", "disabled", true);
-        $('img', row).css('opacity',1).css('opacity',0.5).css('filter','alpha(opacity=50)');
+        $('img', row).css('opacity', 1).css('opacity', 0.5).css('filter', 'alpha(opacity=50)');
         $('img', row).closest('.row').addClass('isDisabled');
         $('input:text, select', row).attr('disabled', 'disabled');
     },
 
-    getTrackSymbol: function(type){
-         var trackName = "w";
-         switch (type) {
-                case "Web Design":
-                    trackName = "w";
-                    break;
-                case "Widget or Mobile Screen Design":
-                    trackName = "wi";
-                    break;
-                case "Wireframes":
-                    trackName = "wf";
-                    break;
-                case "Idea Generation":
-                    trackName = "ig";
-                    break;
-                case "Other":
-                    trackName = "o";
-                    break;
-                 case "UI Prototype Competition":
-                    trackName = "p";
-                    break;
-                case "Content Creation":
-                    trackName = "cc";
-                    break;
-                case "Assembly Competition":
-                    trackName = "ac";
-                    break;
-                case "Print\/Presentation":
-                    trackName = "pr";
-                    break;
-                case "Banners\/Icons":
-                    trackName = "bi";
-                    break;
-                case "Code":
-                    trackName = "c";
-                    break;
-                case "Architecture":
-                    trackName = "a";
-                    break;
-                case "Bug Hunt":
-                    trackName = "bh";
-                    break;
-                case "Specification":
-                    trackName = "spc";
-                    break;
-                case "Test Suites":
-                    trackName = "ts";
-                    break;
-                case "Copilot Posting":
-                    trackName = "cp";
-                    break;
-                case "Conceptualization":
-                    trackName = "c";
-                    break;
-                case "First2Finish":
-                    trackName = "ff";
-                    break;
-                default:
-                    trackName = "o";
-                    break;
+    getTrackSymbol: function(type) {
+        var trackName = "w";
+        switch (type) {
+            case "Web Design":
+                trackName = "w";
+                break;
+            case "Widget or Mobile Screen Design":
+                trackName = "wi";
+                break;
+            case "Wireframes":
+                trackName = "wf";
+                break;
+            case "Idea Generation":
+                trackName = "ig";
+                break;
+            case "Other":
+                trackName = "o";
+                break;
+            case "UI Prototype Competition":
+                trackName = "p";
+                break;
+            case "Content Creation":
+                trackName = "cc";
+                break;
+            case "Assembly Competition":
+                trackName = "ac";
+                break;
+            case "Print\/Presentation":
+                trackName = "pr";
+                break;
+            case "Banners\/Icons":
+                trackName = "bi";
+                break;
+            case "Code":
+                trackName = "c";
+                break;
+            case "Architecture":
+                trackName = "a";
+                break;
+            case "Bug Hunt":
+                trackName = "bh";
+                break;
+            case "Specification":
+                trackName = "spc";
+                break;
+            case "Test Suites":
+                trackName = "ts";
+                break;
+            case "Copilot Posting":
+                trackName = "cp";
+                break;
+            case "Conceptualization":
+                trackName = "c";
+                break;
+            case ("First2Finish" || "Design First2Finish"):
+                trackName = "ff";
+                break;
+            default:
+                trackName = "o";
+                break;
 
-            }
+        }
         return trackName;
     },
-    isDesignContest: function(contestType){
-        return contestType == "Web Design" ||
-          contestType == "Widget or Mobile Screen Design" ||
-          contestType == "Wireframes" ||
-          contestType == "Idea Generation" ||
-          contestType == "Print\/Presentation" ||
-          contestType == "Banners\/Icons" ||
-          contestType == "Logo Design" ||
-          contestType == "Studio Other" ||
-          contestType == "Front-End Flash" ||
-          contestType == "Application Front-End Design";
-
-    },
-
 
     getDataChallenges: function(table, pageIndex, callback) {
 
         app.setLoading();
-        var param= {};
+        var param = {};
         param.action = ajaxAction;
         param.pageIndex = pageIndex;
         param.pageSize = postPerPage;
+        param.contest_type = "data/marathon";
+        param.listType = listType;
         $.ajax({
             url: ajaxUrl,
             data: param,
@@ -451,13 +518,13 @@ appChallenges = {
             success: function(data) {
                 currentPage = pageIndex;
 
-                var latestRecords = currentPage * postPerPage ; // Latest record read by user
+                var latestRecords = currentPage * postPerPage; // Latest record read by user
 
                 $("#challengeNav a").hide();
-                if(latestRecords<data.total) {
+                if (latestRecords < data.total) {
                     $("#challengeNav .nextLink").show();
                 }
-                if(currentPage>1) {
+                if (currentPage > 1) {
                     $("#challengeNav .prevLink").show();
                 }
 
@@ -483,33 +550,32 @@ appChallenges = {
             $('tbody', table).html(null);
         }
         var count = 0;
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+                var row = $(challengesBP.tabData).clone();
+                /*
+                 * generate table row for design past contest type
+                 */
+                if (typeof rec.totalCompetitors !== "undefined") {
+                    $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/ico-track-data.png" />' + '<a href="http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId + '">' + rec.name + '</a>');
+                    $('.colType', row).html("SRM");
+                    $('.colR1start', row).html(app.formatDate2(rec.startDate));
+                    $('.colReg', row).html('<a href="javascript:;">' + rec.totalCompetitors + '</a>');
+                } else {
+                    //$('.contestName', row).html(rec.fullName);
+                    $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/ico-track-data.png" />' + '<a href="http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId + '">' + rec.name + '</a>');
+                    $('.colType', row).html("Marathon");
+                    $('.colR1start', row).html(app.formatDate2(rec.startDate));
+                    $('.colReg', row).html(rec.numberOfRegistrants);
+                }
 
-            var row = $(challengesBP.tabData).clone();
-
-            /*
-             * generate table row for design past contest type
-             */
-            if( typeof(rec.totalCompetitors) != "undefined"    ) {
-              $('.contestName', row).html(rec.name);
-              $('.colType', row).html("SRM");
-              $('.colR1start', row).html(app.formatDateChallenges(rec.startDate));
-              $('.colReg', row).html('<a href="javascript:;">'+rec.totalCompetitors+'</a>');
-            }
-            else {
-              //$('.contestName', row).html(rec.fullName);
-              $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/ico-track-data.png" />' + '<a href="http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId + '">' + rec.fullName + '</a>'); $('.colType', row).html("Marathon");
-              $('.colR1start', row).html(app.formatDateChallenges(rec.startDate));
-              $('.colReg', row).html(rec.numberOfRegistrants);
-            }
-
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
         } else {
-          app.addEmptyResult(table);
+            app.addEmptyResult(table, 'active');
         }
 
         $('.loading').hide();
@@ -518,17 +584,20 @@ appChallenges = {
     getReview: function(table, pageIndex, callback) {
 
         app.setLoading();
-        var param= {};
+        var param = {};
         param.action = ajaxAction;
         param.contest_type = contest_type;
         param.pageIndex = pageIndex;
 
-        if(postPerPage!=-1) {
+        if (postPerPage != -1) {
             param.pageSize = postPerPage;
         }
-        if(sortColumn!="") {
+        if (sortColumn != "") {
             param.sortColumn = sortColumn;
             param.sortOrder = sortOrder;
+        } else {
+            param.sortColumn = 'registrationOpen';
+            param.sortOrder = 'desc';
         }
 
         $.ajax({
@@ -539,28 +608,26 @@ appChallenges = {
             success: function(data) {
                 /* show hide navigation */
                 currentPage = pageIndex;
-                if(postPerPage!=-1) {
-                    var latestRecords = currentPage * postPerPage ; // Latest record read by user
+                if (postPerPage != -1) {
+                    var latestRecords = currentPage * postPerPage; // Latest record read by user
 
                     $("#challengeNav a").hide();
-                    if(latestRecords<data.total) {
+                    if (latestRecords < data.total) {
                         $("#challengeNav .nextLink").show();
                     }
-                    if(currentPage>1) {
+                    if (currentPage > 1) {
                         $("#challengeNav .prevLink").show();
                     }
-                    if(data.total<=postPerPage) {
+                    if (data.total <= postPerPage) {
                         $(".viewAll").hide();
                     }
-                }
-                else {
+                } else {
                     $("#challengeNav a").hide();
                 }
 
-                if(contest_type=="develop") {
+                if (contest_type == "develop") {
                     app.getDevReviewTable(table, data, null);
-                }
-                else {
+                } else {
                     app.getDesignReviewTable(table, data, null);
                 }
 
@@ -584,33 +651,34 @@ appChallenges = {
             $('tbody', table).html(null);
         }
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var row = $(challengesBP.tabReivew).clone();
+                var row = $(challengesBP.tabReivew).clone();
 
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            var round1ScheduledStartDate = app.formatDateChallenges(rec.round1ScheduledStartDate);
-            var round2ScheduledStartDate = app.formatDateChallenges(rec.round2ScheduledStartDate);
-            var contestLinkUrl = siteurl+"/review-opportunity/design/"+"30036202";
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var round1ScheduledStartDate = app.formatDate2(rec.round1ScheduledStartDate);
+                var round2ScheduledStartDate = app.formatDate2(rec.round2ScheduledStartDate);
+                var contestLinkUrl = siteurl + "/review-opportunity/design/" + "30036202";
 
-            row.addClass('track-' + trackName);
-            /*
-             * generate table row for design past contest type
-             */
+                row.addClass('track-' + trackName);
+                /*
+                 * generate table row for design past contest type
+                 */
 
-            $('.colCh a', row).attr("href",contestLinkUrl);
-            $('.contestName', row).html(rec.challengeName);
-            $('.contestName', row).closest('td').addClass('nonTCO');
-            $('.colType', row).html(rec.type);
-            $('.colR1start', row).html(round1ScheduledStartDate);
-            $('.colR2start', row).html(round2ScheduledStartDate);
-            $('.colPay', row).html("$" + app.formatCur(rec.reviewerPayment));
-            $('.colStatus', row).html('<a href="'+contestLinkUrl+'">' + rec.type + '</a>');
+                $('.colCh a', row).attr("href", contestLinkUrl);
+                $('.contestName', row).html(rec.challengeName);
+                $('.contestName', row).closest('td').addClass('nonTCO');
+                $('.colType', row).html(rec.type);
+                $('.colR1start', row).html(round1ScheduledStartDate);
+                $('.colR2start', row).html(round2ScheduledStartDate);
+                $('.colPay', row).html("$" + app.formatCur(rec.reviewerPayment));
+                $('.colStatus', row).html('<a href="' + contestLinkUrl + '">' + rec.type + '</a>');
 
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
         }
         $('.loading').hide();
     },
@@ -622,31 +690,32 @@ appChallenges = {
         }
 
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var row = $(challengesBP.tabDevReivew).clone();
+                var row = $(challengesBP.tabDevReivew).clone();
 
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            var reviewStart = rec.reviewStart;
-            var contestLinkUrl = siteurl+"/review-opportunity/develop/"+"30039083";
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var reviewStart = rec.reviewStart;
+                var contestLinkUrl = siteurl + "/review-opportunity/develop/" + "30039083";
 
-            row.addClass('track-' + trackName);
-            /*
-             * generate table row for design contest type
-             */
-            $('.colCh a', row).attr("href",contestLinkUrl);
-            $('.contestName', row).html(rec.contestName);
-            //$('.contestName', row).closest('td').addClass('nonTCO');
-            $('.colRPay', row).html("$" + app.formatCur(rec.primaryReviewerPayment));
-            $('.colRstart', row).html(rec.reviewStart.replace(/ /g, '&nbsp;'));
-            $('.colSub', row).html(rec.submissionsNumber);
-            $('.colOPos', row).html(rec.numberOfReviewPositionsAvailable);
-            $('.colStatus', row).html('<a href="'+contestLinkUrl+'">details</a>');
+                row.addClass('track-' + trackName);
+                /*
+                 * generate table row for design contest type
+                 */
+                $('.colCh a', row).attr("href", contestLinkUrl);
+                $('.contestName', row).html(rec.contestName);
+                //$('.contestName', row).closest('td').addClass('nonTCO');
+                $('.colRPay', row).html("$" + app.formatCur(rec.primaryReviewerPayment));
+                $('.colRstart', row).html(rec.reviewStart.replace(/ /g, '&nbsp;'));
+                $('.colSub', row).html(rec.submissionsNumber);
+                $('.colOPos', row).html(rec.numberOfReviewPositionsAvailable);
+                $('.colStatus', row).html('<a href="' + contestLinkUrl + '">details</a>');
 
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
         }
 
         $('.loading').hide();
@@ -654,26 +723,29 @@ appChallenges = {
 
     getDesignContests: function(table, pageIndex, callback) {
         app.setLoading();
-        var param= {};
+        var param = {};
         param.action = ajaxAction;
-        if(listType!="AllActive") {
+        if (listType != "AllActive") {
             param.contest_type = contest_type;
             param.listType = listType;
         }
         param.pageIndex = pageIndex;
-        if(postPerPage!=-1) {
+        if (postPerPage != -1) {
             param.pageSize = postPerPage;
         }
-        if(sortColumn!="") {
+        if (sortColumn != "") {
             param.sortColumn = sortColumn;
             param.sortOrder = sortOrder;
+        } else {
+            param.sortColumn = 'submissionEndDate';
+            param.sortOrder = 'desc';
         }
         var startDate = $("#startDate").val();
         var endDate = $("#endDate").val();
-        if( $.trim(startDate)!="" && $('#fSDate').prop('checked') ) {
+        if ($.trim(startDate) != "" && $('#fSDate').prop('checked')) {
             param.submissionEndFrom = startDate;
         }
-        if( $.trim(endDate)!="" && $('#fEDate').prop('checked') ) {
+        if ($.trim(endDate) != "" && $('#fEDate').prop('checked')) {
             param.submissionEndTo = endDate;
         }
 
@@ -690,7 +762,7 @@ appChallenges = {
         }
 
         var challengesRadio = $("input:radio[name ='radioFilterChallenge']:checked").val();
-        if( challengesRadio!=null && challengesRadio!="all" ) {
+        if (challengesRadio != null && challengesRadio != "all") {
             param.challengeType = challengesRadio
         }
 
@@ -702,42 +774,43 @@ appChallenges = {
             success: function(data) {
                 /* show hide navigation */
                 currentPage = pageIndex;
-                if(postPerPage!=-1) {
-                    var latestRecords = currentPage * postPerPage ; // Latest record read by user
+                apiData = data;
+                if (postPerPage != -1) {
+                    var latestRecords = currentPage * postPerPage; // Latest record read by user
 
                     $("#challengeNav a").hide();
-                    if(latestRecords<data.total) {
+                    if (latestRecords < data.total) {
                         $("#challengeNav .nextLink").show();
                     }
-                    if(currentPage>1) {
+                    if (currentPage > 1) {
                         $("#challengeNav .prevLink").show();
                     }
 
-                    if(data.total<=postPerPage) {
+                    if (typeof data.total === 'undefined' || data.total <= postPerPage) {
                         $(".viewAll").hide();
-                    }
-                    else {
+                    } else {
                         $(".viewAll").show();
                     }
-                }
-                else {
+                } else {
                     $("#challengeNav a").hide();
                 }
 
                 // If contest type
-                if(!isBugRace) {
+                if (!isBugRace) {
                     if (typeof(listType) != "undefined" && listType == "Past") {
                         app.getDesignPastContestTable(table, data, null);
                     } else if (typeof(listType) != "undefined" && listType == "AllActive") {
                         app.getAllContestTable(table, data, null);
                         app.getAllContestGrid($('#gridView .contestGrid'), data, (null + 1));
                         app.getDataLandingContests($('.tcoTable'), 1);
+                    } else if (typeof listType !== "undefined" && listType == "Upcoming") {
+                        app.getDesignUpcomingContestTable(table, data, null);
+                        app.getDesignUpcomingContestGrid($('#gridView .contestGrid'), data, (null + 1));
                     } else {
                         app.getDesignContestTable(table, data, null);
                         app.getDesignContestGrid($('#gridView .contestGrid'), data, (null + 1));
                     }
-                }
-                else { // If bug race type
+                } else { // If bug race type
                     app.getBugraceTable(table, data, null);
                 }
 
@@ -748,15 +821,17 @@ appChallenges = {
             },
             fail: function(data) {
                 $('.loading').hide();
-            //    $('tbody', table).html(null);
+                //    $('tbody', table).html(null);
+                $(".viewAll").hide();
                 alert("Data not found!");
             }
         });
+    
     },
 
     getDataLandingContests: function(table, pageIndex, callback) {
         app.setLoading();
-        var param= {};
+        var param = {};
         param.action = "get_active_data_challenges";
         param.pageIndex = 1;
         param.pageSize = 2;
@@ -767,8 +842,8 @@ appChallenges = {
             type: "GET",
             dataType: "json",
             success: function(data) {
-                app.getAllContestTable(table, data, null,true,true);
-                app.getAllContestGrid($('#gridView .contestGrid'), data, (null + 1),true,true);
+                app.getAllContestTable(table, data, null, true, true);
+                app.getAllContestGrid($('#gridView .contestGrid'), data, (null + 1), true, true);
 
                 /* call back */
                 if (callback != null && callback != "") {
@@ -785,210 +860,263 @@ appChallenges = {
 
     /* table draw function */
     getAllContestTable: function(table, data, records2Disp, isAppend, isDataScience) {
-        isAppend = typeof isAppend == 'undefined' ? false : isAppend;
-        isDataScience = typeof isDataScience == 'undefined' ? false : isDataScience;
+        isAppend = typeof isAppend === 'undefined' ? false : isAppend;
+        isDataScience = typeof isDataScience === 'undefined' ? false : isDataScience;
 
         if (isAppend != true) {
             $('tbody', table).html(null);
         }
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
-            if(isDataScience) {
-              var row = $(challengesBP.tabAllData).clone();
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
+                if (isDataScience) {
+                    var row = $(challengesBP.tabAllData).clone();
 
-              var startDate = app.formatDateChallenges(rec.startDate);
-              var totalCompetitors = rec.totalCompetitors;
-              var numSubmissions = rec.divIITotalSolutionsSubmitted;
+                    var startDate = app.formatDate2(rec.startDate);
+                    var totalCompetitors = rec.totalCompetitors;
+                    var numSubmissions = rec.divIITotalSolutionsSubmitted;
 
-              $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/ico-track-data.png" />' + rec.fullName + '</a>');
-              $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
-              $('.contestName', row).attr('href','http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId);
+                    $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/ico-track-data.png" />' + rec.fullName + '</a>');
+                    $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                    $('.contestName', row).attr('href', 'http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId);
 
-              //$('.contestName', row).html('<i></i>' + '<a href="http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId + '">' + rec.fullName + '</a>');
-              //$('.colReg', row).html(rec.numberOfRegistrants);
+                    //$('.contestName', row).html('<i></i>' + '<a href="http://community.topcoder.com/tc?module=MatchDetails&rd=' + rec.roundId + '">' + rec.fullName + '</a>');
+                    //$('.colReg', row).html(rec.numberOfRegistrants);
 
 
-              $('.vEndRound', row).html(startDate);
-              $('.colReg', row).html('<a href="javascript:;">'+rec.numberOfRegistrants+'</a>');
-              $('.colSub', row).html(numSubmissions);
+                    $('.vEndRound', row).html(startDate);
+                    $('.colReg', row).html('<a href="javascript:;">' + rec.numberOfRegistrants + '</a>');
+                    $('.colSub', row).html(numSubmissions);
 
-              $('tbody', table).append(row);
-            }
-            else {
-              var row = $(challengesBP.tabAll).clone();
+                    $('tbody', table).append(row);
+                } else {
+                    var row = $(challengesBP.tabAll).clone();
 
-              var trackName = app.getTrackSymbol(rec.challengeType);
-              var startDate = app.formatDateChallenges(rec.postingDate);
-              var checkPointDate = app.formatDateChallenges(rec.checkpointSubmissionEndDate);
-              var endDate = app.formatDateChallenges(rec.submissionEndDate);
-              var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime);
-              var purse = 0;
-              for(var i=0;i<rec.prize.length;i++)
-                purse += rec.prize[i];
-              var icoTrack = "ico-track-design.png";
-              var tcoFlag = "tco-flag-design.png";
-              var contestType = "design";
+                    var trackName = app.getTrackSymbol(rec.challengeType);
+                    var startDate = app.formatDate2(rec.postingDate);
+                    var checkPointDate;
+                    if (rec.checkpointSubmissionEndDate) {
+                        checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                    }
 
-              if(!app.isDesignContest(rec.challengeType)){
-                icoTrack = "ico-track-develop.png";
-                tcoFlag = "tco-flag-develop.png";
-                row = $(challengesBP.tabAllDev).clone();
-                checkPointDate = app.formatDateChallenges(rec.registrationEndDate);
-                contestType = "develop";
-              }
-              var contestLinkUrl = app.getContestLinkUrl(rec.challengeId,contestType);
+                    var endDate = app.formatDate2(rec.submissionEndDate);
+                    var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime);
+                    var purse = 0;
+                    for (var i = 0; i < rec.prize.length; i++)
+                        purse += rec.prize[i];
 
-              row.addClass('track-' + trackName);
-              /*
-               * generate table row for design contest type
-               */
-              $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/'+icoTrack+'" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/'+tcoFlag+'" />');
-              $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
-              $('.colCh a', row).attr("href",contestLinkUrl);
+                    if (rec.challengeCommunity == "design") {
+                      var icoTrack = "ico-track-design.png";
+                      var tcoFlag = "tco-flag-design.png";
+                    } else {
+                        var icoTrack = "ico-track-develop.png";
+                        var tcoFlag = "tco-flag-develop.png";
+                        row = $(challengesBP.tabAllDev).clone();
+                        if (rec.registrationEndDate) {
+                            checkPointDate = app.formatDate2(rec.registrationEndDate);
+                        }
+                    }
+                    var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
 
-              $('.tipC', row).html(rec.challengeType);
+                    row.addClass('track-' + trackName);
+                    /*
+                     * generate table row for design contest type
+                     */
+                    $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                    $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                    $('.colCh a, .cgCh a', row).attr("href", contestLinkUrl);
 
-              $('.vStartDate', row).html(startDate);
+                    $('.tipC', row).html(rec.challengeType);
 
-              $('.vEndRound', row).html(checkPointDate);
+                    $('.vStartDate', row).html(startDate);
 
-              $('.vEndDate', row).html(endDate);
+                    if (checkPointDate) {
+                        $('.vEndRound', row).html(checkPointDate);
+                    } else {
+                        $('.vEndRound', row).parent().empty();
+                    }
 
-              $('.colTLeft', row).html(remainingTime);
+                    $('.vEndDate', row).html(endDate);
 
-              if (rec.isEnding === "true") {
-                $('.colTLeft', row).addClass('imp');
-              }
+                    $('.colTLeft', row).html(remainingTime);
 
-              $('.colPur', row).html("$" + app.formatCur(purse));
+                    if (rec.isEnding === "true") {
+                        $('.colTLeft', row).addClass('imp');
+                    }
 
-              $('.colReg', row).html('<a href="'+contestLinkUrl+'#viewRegistrant">'+rec.numRegistrants+'</a>');
+                    $('.colPur', row).html("$" + app.formatCur(purse));
 
-              $('.colSub', row).html(rec.numSubmissions);
+                    $('.colReg', row).html('<a href="' + contestLinkUrl + '#viewRegistrant">' + rec.numRegistrants + '</a>');
 
-              $('tbody', table).append(row);
-            }
-          });
-          app.initZebra(table);
+                    $('.colSub', row).html(rec.numSubmissions);
+
+                    $('tbody', table).append(row);
+                }
+            });
+            app.initZebra(table);
         }
     },
 
     addEmptyResult: function(table) {
-      $(table).html("<div><h3>There are no active challenges under this category. Please check back later</h3></div>");
+        $(table).html('<table><tr><td style="font-size:20px;">There are no active challenges under this category. Please check back later</td></tr></table>');
     },
 
     // getGridview Blocks
-    getAllContestGrid: function(gridEl, data, records2Disp,isAppend, isDataScience) {
-        isAppend = typeof isAppend == 'undefined' ? false : isAppend;
-        isDataScience = typeof isDataScience == 'undefined' ? false : isDataScience;
+    getAllContestGrid: function(gridEl, data, records2Disp, isAppend, isDataScience) {
+        isAppend = typeof isAppend === 'undefined' ? false : isAppend;
+        isDataScience = typeof isDataScience === 'undefined' ? false : isDataScience;
 
         if (isAppend != true) {
             gridEl.html(null);
         }
 
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
-            if(isDataScience) {
-              var con = $(challengesBP.grDataAll).clone();
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
+                if (isDataScience) {
+                    var con = $(challengesBP.grDataAll).clone();
 
-              var startDate = app.formatDateChallenges(rec.startDate);
-              var totalCompetitors = rec.totalCompetitors;
-              var numSubmissions = rec.divIITotalSolutionsSubmitted;
+                    var startDate = app.formatDate2(rec.startDate);
+                    var totalCompetitors = rec.totalCompetitors;
+                    var numSubmissions = rec.divIITotalSolutionsSubmitted;
 
-              var trackName = "trackAn";
-              con.addClass(trackName);
-              var contestName = rec.name.length > 60 ? rec.name.substr(0, 61) + '...' : rec.name;
-              $('.contestName', con).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/ico-track-data.png" />' + contestName);
-              $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
-              $('.vStartDate', con).html(startDate);
-              $('.cgReg', con).html('<i></i>' + totalCompetitors);
-              $('.cgSub', con).html('<i></i>' + numSubmissions);
-              gridEl.append(con);
-            }
-            else {
-              var con = $(challengesBP.grDOpen).clone();
+                    var trackName = "trackAn";
+                    con.addClass(trackName);
+                    var contestName = rec.name.length > 60 ? rec.name.substr(0, 61) + '...' : rec.name;
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/ico-track-data.png" />' + contestName);
+                    $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
+                    $('.vStartDate', con).html(startDate);
+                    $('.cgReg', con).html('<i></i>' + totalCompetitors);
+                    $('.cgSub', con).html('<i></i>' + numSubmissions);
+                    gridEl.append(con);
+                } else {
+                    var con = $(challengesBP.grDOpen).clone();
 
-              var trackName = app.getTrackSymbol(rec.challengeType);
-              trackName += " trackSD";
+                    var trackName = app.getTrackSymbol(rec.challengeType);
+                    trackName += " trackSD";
 
-              var startDate = app.formatDateChallenges(rec.postingDate);
-              var checkPointDate = app.formatDateChallenges(rec.checkpointSubmissionEndDate);
-              var endDate = app.formatDateChallenges(rec.submissionEndDate);
-              var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime, true);
-              var purse = 0;
-              for(var i=0;i<rec.prize.length;i++)
-                purse += rec.prize[i];
-              var icoTrack = "ico-track-design.png";
-              var tcoFlag = "tco-flag-design.png";
-              var contestType = "design";
+                    var startDate = app.formatDate2(rec.postingDate);
+                    var checkPointDate;
+                    if (rec.checkpointSubmissionEndDate) {
+                        checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                    }
 
-              /* for develop type contest */
-              if(!app.isDesignContest(rec.challengeType)){
-                icoTrack = "ico-track-develop.png";
-                tcoFlag = "tco-flag-develop.png";
-                con = $(challengesBP.grDevOpen).clone();
+                    var endDate = app.formatDate2(rec.submissionEndDate);
+                    var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime, true);
+                    var purse = 0;
+                    for (var i = 0; i < rec.prize.length; i++)
+                        purse += rec.prize[i];
 
-                checkPointDate = app.formatDateChallenges(rec.submissionEndDate);
-                contestType = "develop";
-              }
-              var contestLinkUrl = app.getContestLinkUrl(rec.challengeId,contestType);
-              var contestName = rec.challengeName.length > 60 ? rec.challengeName.substr(0, 61) + '...' : rec.challengeName;
+                    var icoTrack;
+                    var tcoFlag;
+
+                    if (rec.challengeCommunity == "design") {
+                      icoTrack = "ico-track-design.png";
+                      tcoFlag = "tco-flag-design.png";
+                    } else {
+                      icoTrack = "ico-track-develop.png";
+                      tcoFlag = "tco-flag-develop.png";
+                      row = $(challengesBP.tabAllDev).clone();
+                      if (rec.registrationEndDate) {
+                          checkPointDate = app.formatDate2(rec.registrationEndDate);
+                      }
+                    }
+
+                    var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, contestType);
+                    var contestName = rec.challengeName.length > 60 ? rec.challengeName.substr(0, 61) + '...' : rec.challengeName;
 
 
-              con.addClass('track-' + trackName);
-              con.addClass('type-' + contestType);
+                    con.addClass('track-' + trackName);
+                    con.addClass('type-' + rec.challengeCommunity);
 
-              $('.contestName', con).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/'+icoTrack+'" />' + contestName + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/'+tcoFlag+'" />');
-              $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + contestName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                    $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
 
-              $('.colCh a, .cgCh a', con).attr("href",contestLinkUrl);
+                    $('.colCh a, .cgCh a', con).attr("href", contestLinkUrl);
 
-              $('.type', con).html(rec.challengeType);
-              $('.tipC', con).html(rec.challengeType);
-              $('.vStartDate', con).html(startDate);
-              $('.vEndRound', con).html(checkPointDate);
-              $('.vEndDate', con).html(endDate);
-              $('.vPhase', con).html(rec.currentPhaseName);
+                    $('.type', con).html(rec.challengeType);
+                    $('.tipC', con).html(rec.challengeType);
+                    $('.vStartDate', con).html(startDate);
+                    if (checkPointDate) {
+                        $('.vEndRound', con).html(checkPointDate);
+                    } else {
+                        $('.vEndRound', con).parent().empty();
+                    }
 
-              $('.cgTLeft', con).html('<i></i>' + remainingTime);
-              if (rec.isEnding === "true") {
-                $('.cgTLeft', con).addClass('imp');
-              }
-              $('.cgPur', con).html('<i></i> $' + purse);
-              $('.cgReg', con).html('<i></i>' + '<a href="'+contestLinkUrl+'#viewRegistrant">'+rec.numRegistrants+'</a>');
-              $('.cgSub', con).html('<i></i>' + rec.numSubmissions);
+                    $('.vEndDate', con).html(endDate);
+                    $('.vPhase', con).html(rec.currentPhaseName);
 
-              $('.cgTLeft', con).qtip({
-                content:  { text: remainingTime, title: 'Time Left' },
-                style:    { classes: 'qtip-'+contestType+' qtip-rounded qtip-shadow' },
-                position: { my: 'bottom center', at: 'top center '}
-              });
-              $('.cgPur', con).qtip({
-                content:  { text: '$' + purse, title: 'Prize Purse' },
-                style:    { classes: 'qtip-'+contestType+' qtip-rounded qtip-shadow' },
-                position: { my: 'bottom center', at: 'top center '}
-              });
-              $('.cgReg', con).qtip({
-                content:  { text: rec.numRegistrants || '0', title: 'Registrants' },
-                style:    { classes: 'qtip-'+contestType+' qtip-rounded qtip-shadow' },
-                position: { my: 'bottom center', at: 'top center '}
-              });
-              $('.cgSub', con).qtip({
-                content:  { text: rec.numSubmissions || '0', title: 'Submissions' },
-                style:    { classes: 'qtip-'+contestType+' qtip-rounded qtip-shadow' },
-                position: { my: 'bottom center', at: 'top center '}
-              });
+                    $('.cgTLeft', con).html('<i></i>' + remainingTime);
+                    if (rec.isEnding === "true") {
+                        $('.cgTLeft', con).addClass('imp');
+                    }
+                    $('.cgPur', con).html('<i></i> $' + purse);
+                    $('.cgReg', con).html('<i></i>' + '<a href="' + contestLinkUrl + '#viewRegistrant">' + rec.numRegistrants + '</a>');
+                    $('.cgSub', con).html('<i></i>' + rec.numSubmissions);
 
-              gridEl.append(con);
-            }
-            window.setTimeout(function() {
-              window.setTimeout(function() {
-                $('.loading').hide();
-              }, 2000);
-            }, 5);
-          });
+                    $('.cgTLeft', con).qtip({
+                        content: {
+                            text: remainingTime,
+                            title: 'Time Left'
+                        },
+                        style: {
+                            classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center '
+                        }
+                    });
+                    $('.cgPur', con).qtip({
+                        content: {
+                            text: '$' + purse,
+                            title: 'Prize Purse'
+                        },
+                        style: {
+                            classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center '
+                        }
+                    });
+                    $('.cgReg', con).qtip({
+                        content: {
+                            text: rec.numRegistrants || '0',
+                            title: 'Registrants'
+                        },
+                        style: {
+                            classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center '
+                        }
+                    });
+                    $('.cgSub', con).qtip({
+                        content: {
+                            text: rec.numSubmissions || '0',
+                            title: 'Submissions'
+                        },
+                        style: {
+                            classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center '
+                        }
+                    });
+
+                    gridEl.append(con);
+                }
+                window.setTimeout(function() {
+                    window.setTimeout(function() {
+                        $('.loading').hide();
+                    }, 2000);
+                }, 5);
+            });
         }
     },
 
@@ -998,69 +1126,85 @@ appChallenges = {
             $('tbody', table).html(null);
         }
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var row = $(challengesBP.gdOpen).clone();
+                var row = $(challengesBP.gdOpen).clone();
 
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            var startDate = app.formatDateChallenges(rec.postingDate);
-            var checkPointDate = app.formatDateChallenges(rec.checkpointSubmissionEndDate);
-            var endDate = app.formatDateChallenges(rec.submissionEndDate);
-            var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime);
-            var contestLinkUrl = app.getContestLinkUrl(rec.challengeId,contest_type);
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var startDate = app.formatDate2(rec.postingDate);
+                var checkPointDate;
+                if (rec.checkpointSubmissionEndDate) {
+                    checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                }
 
-            var purse = 0;
-            for(var i=0;i<rec.prize.length;i++)
-              purse += rec.prize[i];
+                var endDate;
+                if (rec.submissionEndDate) {
+                  endDate = app.formatDate2(rec.submissionEndDate);
+                }
 
-            if(contest_type=="develop"){
-              row = $(challengesBP.gdDevOpen).clone();
-              checkPointDate = app.formatDateChallenges(rec.registrationEndDate);
-            }
+                var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime);
+                var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
 
-            row.addClass('track-' + trackName);
-            /*
-             * generate table row for design contest type
-             */
-            var icoTrack = "ico-track-design.png";
-            var tcoFlag = "tco-flag-design.png";
-            if(!app.isDesignContest(rec.challengeType)){
-              icoTrack = "ico-track-develop.png";
-              tcoFlag = "tco-flag-develop.png";
-            }
-            $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/'+icoTrack+'" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/'+tcoFlag+'" />');
-            $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
-            $('.colCh a', row).attr("href",contestLinkUrl);
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
 
-            $('.tipC', row).html(rec.challengeType);
+                if (contest_type == "develop") {
+                    row = $(challengesBP.gdDevOpen).clone();
+                    if (rec.registrationEndDate) {
+                        checkPointDate = app.formatDate2(rec.registrationEndDate);
+                    }
+                }
 
-            $('.vStartDate', row).html(startDate);
+                row.addClass('track-' + trackName);
+                /*
+                 * generate table row for design contest type
+                 */
+                var icoTrack = "ico-track-design.png";
+                var tcoFlag = "tco-flag-design.png";
+                if (rec.challengeCommunity == "develop") {
+                  icoTrack = "ico-track-develop.png";
+                  tcoFlag = "tco-flag-develop.png";
+                }
 
-            $('.vEndRound', row).html(checkPointDate);
+                $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                $('.colCh a, .cgCh a', row).attr("href", contestLinkUrl);
 
-            $('.vEndDate', row).html(endDate);
+                $('.tipC', row).html(rec.challengeType);
 
-            $('.colTLeft', row).html(remainingTime);
+                $('.vStartDate', row).html(startDate);
 
-            if (rec.isEnding === "true") {
-              $('.colTLeft', row).addClass('imp');
-            }
+                if (checkPointDate) {
+                    $('.vEndRound', row).html(checkPointDate);
+                } else {
+                    $('.vEndRound', row).parent().empty();
+                }
 
-            $('.colPur', row).html("$" + app.formatCur(purse));
+                $('.vEndDate', row).html(endDate);
 
-            $('.colPhase', row).html(rec.currentPhaseName);
+                $('.colTLeft', row).html(remainingTime);
 
-            $('.colReg', row).html('<a href="'+contestLinkUrl+'#viewRegistrant">'+rec.numRegistrants+'</a>');
+                if (rec.isEnding === "true") {
+                    $('.colTLeft', row).addClass('imp');
+                }
 
-            $('.colSub', row).html(rec.numSubmissions);
+                $('.colPur', row).html("$" + app.formatCur(purse));
 
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
-        }  else {
-          app.addEmptyResult(table);
-          $('.loading').hide();
+                $('.colPhase', row).html(rec.registrationOpen == 'Yes' ? 'Open to All' : 'Open to Challenge Registrants');
+
+                $('.colReg', row).html('<a href="' + contestLinkUrl + '#viewRegistrant">' + rec.numRegistrants + '</a>');
+
+                $('.colSub', row).html(rec.numSubmissions);
+
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
+        } else {
+            app.addEmptyResult(table, 'active');
+            $('.loading').hide();
         }
     },
 
@@ -1069,89 +1213,139 @@ appChallenges = {
         gridEl.html(null);
 
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var con = $(challengesBP.grDOpen).clone();
+                var con = $(challengesBP.grDOpen).clone();
 
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            trackName += " trackSD";
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                trackName += " trackSD";
 
-            var startDate = app.formatDateChallenges(rec.postingDate);
-            var checkPointDate = app.formatDateChallenges(rec.checkpointSubmissionEndDate);
-            var endDate = app.formatDateChallenges(rec.submissionEndDate);
-            var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime, true);
-            var contestLinkUrl = app.getContestLinkUrl(rec.challengeId,contest_type);
-            var purse = 0;
-            for(var i=0;i<rec.prize.length;i++)
-              purse += rec.prize[i];
+                var startDate = app.formatDate2(rec.postingDate);
+                var checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                if (rec.checkpointSubmissionEndDate) {
+                    checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                }
+                var endDate = app.formatDate2(rec.submissionEndDate);
+                var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime, true);
+                var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
 
-            /* for develop type contest */
-            if(contest_type=="develop"){
-              con = $(challengesBP.grDevOpen).clone();
-              checkPointDate = app.formatDateChallenges(rec.registrationEndDate);
-            }
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
+
+                /* for develop type contest */
+                var icoTrack = "ico-track-design.png";
+                var tcoFlag = "tco-flag-design.png";
+                if (rec.challengeCommunity == "develop") {
+                    con = $(challengesBP.grDevOpen).clone();
+                    if (rec.registrationEndDate) {
+                        checkPointDate = app.formatDate2(rec.registrationEndDate);
+                    }
+                    icoTrack = "ico-track-develop.png";
+                    tcoFlag = "tco-flag-develop.png";
+                }
+
+                con.addClass('track-' + trackName);
+                con.addClass('type-' + rec.challengeCommunity);
+
+                if (rec.challengeName.length < 61) {
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                } else {
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName.substr(0, 61) + '...' + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                }
+                $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
+                $('.colCh a, .cgCh a', con).attr("href", contestLinkUrl);
+
+                $('.tipC', con).html(rec.challengeType);
+                $('.vStartDate', con).html(startDate);
+
+                if (checkPointDate) {
+                    $('.vEndRound', con).html(checkPointDate);
+                } else {
+                    $('.vEndRound', con).parent().empty();
+                }
+
+                if (endDate) {
+                  $('.vEndDate', con).html(endDate);
+                } else {
+                  $('.vEndDate', con).parent().empty();
+                }
+
+                $('.vPhase', con).html(rec.currentPhaseName);
+
+                $('.cgTLeft', con).html('<i></i>' + remainingTime);
+                if (rec.isEnding === "true") {
+                    $('.cgTLeft', con).addClass('imp');
+                }
+                $('.cgPur', con).html('<i></i> $' + purse);
+                $('.cgReg', con).html('<i></i>' + '<a href="' + contestLinkUrl + '#viewRegistrant">' + rec.numRegistrants + '</a>');
+                $('.cgSub', con).html('<i></i>' + rec.numSubmissions);
+
+                $('.cgTLeft', con).qtip({
+                    content: {
+                        text: remainingTime,
+                        title: 'Time Left'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
+                $('.cgPur', con).qtip({
+                    content: {
+                        text: '$' + purse,
+                        title: 'Prize Purse'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
+                $('.cgReg', con).qtip({
+                    content: {
+                        text: rec.numRegistrants || '0',
+                        title: 'Registrants'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
+                $('.cgSub', con).qtip({
+                    content: {
+                        text: rec.numSubmissions || '0',
+                        title: 'Submissions'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
 
 
-
-            con.addClass('track-' + trackName);
-            con.addClass('type-' + contest_type);
-            var icoTrack = "ico-track-design.png";
-            var tcoFlag = "tco-flag-design.png";
-            if(!app.isDesignContest(rec.challengeType)){
-              icoTrack = "ico-track-develop.png";
-              tcoFlag = "tco-flag-develop.png";
-            }
-
-            $('.contestName', con).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/'+icoTrack+'" />' + rec.challengeName.substr(0, 61) + '...' + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/'+tcoFlag+'" />');
-            $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
-            $('.colCh a', con).attr("href",contestLinkUrl);
-
-            $('.tipC', con).html(rec.challengeType);
-            $('.vStartDate', con).html(startDate);
-            $('.vEndRound', con).html(checkPointDate);
-            $('.vEndDate', con).html(endDate);
-            $('.vPhase', con).html(rec.currentPhaseName);
-
-            $('.cgTLeft', con).html('<i></i>' + remainingTime);
-            if (rec.isEnding === "true") {
-              $('.cgTLeft', con).addClass('imp');
-            }
-            $('.cgPur', con).html('<i></i> $' + purse);
-            $('.cgReg', con).html('<i></i>' + '<a href="'+contestLinkUrl+'#viewRegistrant">'+rec.numRegistrants+'</a>');
-            $('.cgSub', con).html('<i></i>' + rec.numSubmissions);
-
-            $('.cgTLeft', con).qtip({
-              content:  { text: remainingTime, title: 'Time Left' },
-              style:    { classes: 'qtip-'+contest_type+' qtip-rounded qtip-shadow' },
-              position: { my: 'bottom center', at: 'top center '}
+                gridEl.append(con);
+                window.setTimeout(function() {
+                    window.setTimeout(function() {
+                        $('.loading').hide();
+                    }, 2000);
+                }, 5);
             });
-            $('.cgPur', con).qtip({
-              content:  { text: '$' + purse, title: 'Prize Purse' },
-              style:    { classes: 'qtip-'+contest_type+' qtip-rounded qtip-shadow' },
-              position: { my: 'bottom center', at: 'top center '}
-            });
-            $('.cgReg', con).qtip({
-              content:  { text: rec.numRegistrants || '0', title: 'Registrants' },
-              style:    { classes: 'qtip-'+contest_type+' qtip-rounded qtip-shadow' },
-              position: { my: 'bottom center', at: 'top center '}
-            });
-            $('.cgSub', con).qtip({
-              content:  { text: rec.numSubmissions || '0', title: 'Submissions' },
-              style:    { classes: 'qtip-'+contest_type+' qtip-rounded qtip-shadow' },
-              position: { my: 'bottom center', at: 'top center '}
-            });
-
-
-            gridEl.append(con);
-            window.setTimeout(function() {
-              window.setTimeout(function() {
-                $('.loading').hide();
-              }, 2000);
-            }, 5);
-          });
-        }   else {
-          app.addEmptyResult(gridEl);
+        } else {
+            app.addEmptyResult(gridEl, 'active');
         }
     },
 
@@ -1161,79 +1355,288 @@ appChallenges = {
             $('tbody', table).html(null);
         }
         var count = 0;
-        if (data.data.length > 0) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var row = $(challengesBP.tabPC).clone();
+                var row = $(challengesBP.tabPC).clone();
 
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            var startDate = app.formatDateChallenges(rec.postingDate);
-            var checkPointDate = app.formatDateChallenges(rec.checkpointSubmissionEndDate);
-            var endDate = app.formatDateChallenges(rec.submissionEndDate);
-            var remainingTime = app.formatTimeLeft(rec.currentPhaseRemainingTime);
-            var contestLinkUrl = app.getContestLinkUrl(rec.challengeId,contest_type);
-            var purse = 0;
-            for(var i=0;i<rec.prize.length;i++)
-              purse += rec.prize[i];
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var startDate = app.formatDate2(rec.postingDate);
 
+                var checkPointDate;
+                if (rec.checkpointSubmissionEndDate) {
+                checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                }
 
-            row.addClass('track-' + trackName);
-            /*
-             * generate table row for design past contest type
-             */
+                var endDate;
+                if (rec.submissionEndDate) {
+                  endDate = app.formatDate2(rec.submissionEndDate);
+                }
 
-            var icoTrack = "ico-track-design.png";
-            var tcoFlag = "tco-flag-design.png";
-            if(!app.isDesignContest(rec.challengeType)){
-              icoTrack = "ico-track-develop.png";
-              tcoFlag = "tco-flag-develop.png";
-            }
-            $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/'+icoTrack+'" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/'+tcoFlag+'" />');
-            $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
-            $('.colCh a', row).attr("href",contestLinkUrl);
-            $('.colType .tipC', row).html(rec.challengeType);
-
-            $('.vStartDate', row).html(startDate);
-
-            $('.vEndRound', row).html(checkPointDate);
-
-            $('.vEndDate', row).html(endDate);
-
-            $('.colPur', row).html("$" + purse);
-
-            $('.colPhase', row).html(rec.currentStatus);
-
-            /* tmp solution */
-            if(app.isDesignContest(rec.challengeType)){
-              $('.winBages', row).html('<a href="http://studio.topcoder.com/?module=ViewContestResults&ct='+rec.challengeId+'">View Winners</a>');
-            }
-            else{
-              $('.winBages', row).html('<a href="http://community.topcoder.com/tc?module=ProjectDetail&pj='+rec.challengeId+'">View Winners</a>');
-            }
-            $('.moreWin', row).hide();
-
-            $('.colReg', row).html('<a href="'+contestLinkUrl+'#viewRegistrant">'+rec.numRegistrants+'</a>');
-
-            $('.coleSub .subs', row).prepend(rec.numSubmissions);
-            $('.coleSub .tipC', row).html(rec.numSubmissions + ' submissions<br/>');
-
-            if (rec.isPrivate == "true") {
-              $('.colAccessLevel', row).removeClass('public').addClass('private');
-            }
+                var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
 
 
+                row.addClass('track-' + trackName);
 
+                var icoTrack = "ico-track-design.png";
+                var tcoFlag = "tco-flag-design.png";
+                if (rec.challengeCommunity == "develop") {
+                    icoTrack = "ico-track-develop.png";
+                    tcoFlag = "tco-flag-develop.png";
+                }
 
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
+                $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                $('.colCh a, .cgCh a', row).attr("href", contestLinkUrl);
+                $('.colType .tipC', row).html(rec.challengeType);
+
+                $('.vStartDate', row).html(startDate);
+
+                if (checkPointDate) {
+                  $('.vEndRound', row).html(checkPointDate);
+                } else {
+                  $('.vEndRound', row).parent().empty();
+                }
+
+                if (endDate) {
+                  $('.vEndDate', row).html(endDate);
+                } else {
+                  $('.vEndDate', row).parent().empty();
+                }
+
+                $('.colPur', row).html("$" + purse);
+
+                $('.colPhase', row).html('Completed');
+
+                $('.winBages', row).html('<a href="' + siteurl+ '/challenge-details/' +rec.challengeId+'?type='+ rec.challengeCommunity +'#winner">View Winners</a>');
+                
+                $('.moreWin', row).hide();
+
+                $('.colReg', row).html('<a href="' + contestLinkUrl + '#viewRegistrant">' + rec.numRegistrants + '</a>');
+
+                $('.coleSub .subs', row).prepend(rec.numSubmissions);
+                $('.coleSub .tipC', row).html(rec.numSubmissions + ' submissions<br/>');
+
+                if (rec.isPrivate == "true") {
+                    $('.colAccessLevel', row).removeClass('public').addClass('private');
+                }
+
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
         } else {
-          app.addEmptyResult(table);
+            app.addEmptyResult(table, 'past');
         }
 
         $('.loading').hide();
     },
+    getDesignUpcomingContestTable: function(table, data, records2Disp, isAppend) {
+        if (isAppend != true) {
+            $('tbody', table).html(null);
+        }
+        var count = 0;
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
+                var row = $(challengesBP.gdUpcoming).clone();
+
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var startDate = app.formatDate2(rec.postingDate);
+                var checkPointDate;
+                if (rec.checkpointSubmissionEndDate) {
+                    checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                }
+
+                var endDate;
+                if (rec.submissionEndDate) {
+                  endDate = app.formatDate2(rec.submissionEndDate);
+                }
+
+                var contestDuration = app.getContestDuration(rec.postingDate, rec.submissionEndDate);
+                var contestTechnologies = rec.technologies.join(', ');
+                if (!contestTechnologies) {
+                    contestTechnologies = "N/A";
+                }
+                var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
+
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
+
+                var icoTrack = "ico-track-design.png";
+                var tcoFlag = "tco-flag-design.png";
+                if (rec.challengeCommunity == "develop") {
+                    row = $(challengesBP.gdDevUpcoming).clone();
+                    if (rec.registrationEndDate) {
+                        checkPointDate = app.formatDate2(rec.registrationEndDate);
+                    }
+                    icoTrack = "ico-track-develop.png";
+                    tcoFlag = "tco-flag-develop.png";
+                }
+
+                row.addClass('track-' + trackName);
+
+                $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                $('.colCh a, .cgCh a', row).attr("href", contestLinkUrl);
+
+                $('.tipC', row).html(rec.challengeType);
+
+                $('.vStartDate', row).html(startDate);
+
+                if (checkPointDate) {
+                    $('.vEndRound', row).html(checkPointDate);
+                } else {
+                    $('.vEndRound', row).parent().empty();
+                }
+
+                if (endDate) {
+                  $('.vEndDate', row).html(endDate);
+                } else {
+                  $('.vEndDate', row).parent().empty();
+                }
+
+                $('.colDur', row).html(contestDuration);
+                
+                $('.colTech', row).html(contestTechnologies);
+
+                if (rec.isEnding === "true") {
+                    $('.colTLeft', row).addClass('imp');
+                }
+
+                $('.colPur', row).html("$" + app.formatCur(purse));
+
+                $('.colStat', row).html(rec.currentStatus);
+
+
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
+        } else {
+            app.addEmptyResult(table, 'upcoming');
+            $('.loading').hide();
+        }
+    },
+    getDesignUpcomingContestGrid: function(gridEl, data, records2Disp) {
+        gridEl.html(null);
+
+        var count = 0;
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
+
+                var con = $(challengesBP.grDUpcoming).clone();
+
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                trackName += " trackSD";
+
+                var startDate = app.formatDate2(rec.postingDate);
+                var checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                if (rec.checkpointSubmissionEndDate) {
+                    checkPointDate = app.formatDate2(rec.checkpointSubmissionEndDate);
+                }
+
+                var endDate;
+                if (rec.submissionEndDate) {
+                  endDate = app.formatDate2(rec.submissionEndDate);
+                }
+
+                var contestDuration = app.getContestDuration(rec.postingDate, rec.submissionEndDate);
+                var contestTechnologies = rec.technologies.join(', ');
+                var contestLinkUrl = app.getContestLinkUrl(rec.challengeId, rec.challengeCommunity);
+
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
+
+                con.addClass('track-' + trackName);
+                con.addClass('type-' + rec.challengeCommunity);
+                var icoTrack = "ico-track-design.png";
+                var tcoFlag = "tco-flag-design.png";
+                if (rec.challengeCommunity == "develop") {
+                    con = $(challengesBP.grDevUpcoming).clone();
+                    if (rec.registrationEndDate) {
+                        checkPointDate = app.formatDate2(rec.registrationEndDate);
+                    }
+                    icoTrack = "ico-track-develop.png";
+                    tcoFlag = "tco-flag-develop.png";
+                }
+
+                if (rec.challengeName.length < 61) {
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                } else {
+                    $('.contestName', con).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/' + icoTrack + '" />' + rec.challengeName.substr(0, 61) + '...' + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/' + tcoFlag + '" />');
+                }
+                $('.contestName', con).parents(".inTCO").addClass("hasTCOIco");
+                $('.colCh a, .cgCh a', con).attr("href", contestLinkUrl);
+
+                $('.tipC', con).html(rec.challengeType);
+                $('.vStartDate', con).html(startDate);
+
+                if (checkPointDate) {
+                    $('.vEndRound', con).html(checkPointDate);
+                } else {
+                    $('.vEndRound', con).parent().empty();
+                }
+
+                $('.vEndDate', con).html(endDate);
+                $('.vStatus', con).html(rec.currentStatus);
+
+                if (!contestTechnologies) {
+                    contestTechnologies = "N/A";
+                }
+                $('.vTech', con).html(contestTechnologies);
+
+                $('.cgTLeft', con).html('<i></i>' + contestDuration);
+                if (rec.isEnding === "true") {
+                    $('.cgTLeft', con).addClass('imp');
+                }
+                $('.cgPur', con).html('<i></i> $' + purse);
+
+                $('.cgTLeft', con).qtip({
+                    content: {
+                        text: contestDuration + " days",
+                        title: 'Duration'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
+                $('.cgPur', con).qtip({
+                    content: {
+                        text: '$' + purse,
+                        title: 'Prize Purse'
+                    },
+                    style: {
+                        classes: 'qtip-' + rec.challengeCommunity + ' qtip-rounded qtip-shadow'
+                    },
+                    position: {
+                        my: 'bottom center',
+                        at: 'top center '
+                    }
+                });
+
+
+                gridEl.append(con);
+                window.setTimeout(function() {
+                    window.setTimeout(function() {
+                        $('.loading').hide();
+                    }, 2000);
+                }, 5);
+            });
+        } else {
+            app.addEmptyResult(gridEl, 'upcoming');
+        }
+    },
     /* table draw function */
     getBugraceTable: function(table, data, records2Disp, isAppend) {
 
@@ -1241,32 +1644,33 @@ appChallenges = {
             $('tbody', table).html(null);
         }
         var count = 0;
-        if (data.data.length) {
-          $.each(data.data, function(key, rec) {
+        //JS uncaught typeError when no data available, so adding defined check
+        if (typeof data.data !== 'undefined' && data.data.length > 0) {
+            $.each(data.data, function(key, rec) {
 
-            var row = $(challengesBP.tabF2F).clone();
-            var startDate = app.formatDateChallenges(rec.postingDate);
-            var trackName = app.getTrackSymbol(rec.challengeType);
-            var purse = 0;
-            for(var i=0;i<rec.prize.length;i++)
-              purse += rec.prize[i];
-            row.addClass('track-' + trackName);
-            /*
-             * generate table row for design past contest type
-             */
-            $('.contestName', row).html('<img alt="" class="allContestIco" src="'+stylesheet_dir+'/i/ico-track-develop.png" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="'+stylesheet_dir+'/i/tco-flag-develop.png" />');
-            $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
-            $('.tipC', row).html(rec.challengeType);
-            $('.colPay', row).html("$" + app.formatCur(purse));
-            $('.colTP', row).html(20);
-            $('.colReg', row).html('<a href="javascript:;">'+rec.numRegistrants+'</a>');
-            $('.colAS', row).html(startDate);
+                var row = $(challengesBP.tabF2F).clone();
+                var startDate = app.formatDate2(rec.postingDate);
+                var trackName = app.getTrackSymbol(rec.challengeType);
+                var purse = 0;
+                for (var i = 0; i < rec.prize.length; i++)
+                    purse += rec.prize[i];
+                row.addClass('track-' + trackName);
+                /*
+                 * generate table row for design past contest type
+                 */
+                $('.contestName', row).html('<img alt="" class="allContestIco" src="' + stylesheet_dir + '/i/ico-track-develop.png" />' + rec.challengeName + '<img alt="" class="allContestTCOIco" src="' + stylesheet_dir + '/i/tco-flag-develop.png" />');
+                $('.contestName', row).parents(".inTCO").addClass("hasTCOIco");
+                $('.tipC', row).html(rec.challengeType);
+                $('.colPay', row).html("$" + app.formatCur(purse));
+                $('.colTP', row).html(20);
+                $('.colReg', row).html('<a href="javascript:;">' + rec.numRegistrants + '</a>');
+                $('.colAS', row).html(startDate);
 
-            $('tbody', table).append(row);
-          });
-          app.initZebra(table);
+                $('tbody', table).append(row);
+            });
+            app.initZebra(table);
         } else {
-          app.addEmptyResult(table);
+            app.addEmptyResult(table, 'active');
         }
 
         $('.loading').hide();
@@ -1274,7 +1678,7 @@ appChallenges = {
 
     //format currency
     formatCur: function(cu) {
-         return cu.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return cu.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
 
     //format date
@@ -1282,33 +1686,41 @@ appChallenges = {
         return date.replace(/ /g, '&nbsp;').replace(/[.]/g, '/');
     },
 
-    //format date challenges
-    formatDateChallenges: function(date) {
-        if(date=="") return "";
-        var timezone = "EST";
-        var temp = new Date(date);
-        var month = temp.getMonth()+1;
-        month = month < 10 ? "0"+ month : month;
-        var day = temp.getDate() < 10 ?"0"+ temp.getDate() : temp.getDate() ;
-        var year = temp.getFullYear();
-        var hour = temp.getHours() < 10 ?"0"+ temp.getHours() : temp.getHours() ;
-        var minutes = temp.getMinutes() < 10 ?"0"+ temp.getMinutes() : temp.getMinutes() ;
-        var dateStr = month+"/"+day+"/"+year+" "+hour+":"+minutes+" "+timezone;
-        return dateStr;
+    formatDate2: function(date) {
+        //some function is passing in undefined timezone_string variable causing js errors, so check if undefined and set default:
+		if (typeof timezone_string === 'undefined') {
+		var timezone_string = "America/Toronto"; // lets set to TC timezone 
+		}
+	return moment(date).tz(timezone_string).format("D MMM YYYY HH:mm z");
+        // var d = new Date(date);
+        // var utcd = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds());
+
+        // // obtain local UTC offset and convert to msec
+        // localOffset = d.getTimezoneOffset() * 60000;
+        // var newdate = new Date(utcd + localOffset);
+
+        // return newdate.toDateString() + ' ' + ((newdate.getUTCHours() < 10 ? '0' : '') + newdate.getUTCHours()) + ':' + ((newdate.getUTCMinutes() < 10 ? '0' : '') + newdate.getUTCMinutes());
     },
 
+    getContestDuration: function(dateStart, dateEnd) {
+      var start = moment(dateStart.slice(0, -5));
+      var end = moment(dateEnd.slice(0, -5));
+      var days = end.diff(start, 'days');
+      return days;
+    }, 
+    
     //format date review
     formatDateReview: function(date) {
-        if(date=="") return "";
+        if (date == "") return "";
         var timezone = "EST";
         var temp = new Date(date);
-        var month = temp.getMonth()+1;
-        month = month < 10 ? "0"+ month : month;
-        var day = temp.getDate() < 10 ?"0"+ temp.getDate() : temp.getDate() ;
+        var month = temp.getMonth() + 1;
+        month = month < 10 ? "0" + month : month;
+        var day = temp.getDate() < 10 ? "0" + temp.getDate() : temp.getDate();
         var year = temp.getFullYear();
-        var hour = temp.getHours() < 10 ?"0"+ temp.getHours() : temp.getHours() ;
-        var minutes = temp.getMinutes() < 10 ?"0"+ temp.getMinutes() : temp.getMinutes() ;
-        var dateStr = month+"."+day+"."+year+" "+hour+":"+minutes+" "+timezone;
+        var hour = temp.getHours() < 10 ? "0" + temp.getHours() : temp.getHours();
+        var minutes = temp.getMinutes() < 10 ? "0" + temp.getMinutes() : temp.getMinutes();
+        var dateStr = month + "." + day + "." + year + " " + hour + ":" + minutes + " " + timezone;
         return dateStr;
     },
 
@@ -1319,34 +1731,38 @@ appChallenges = {
      * @return string
      */
     formatDateApi: function(date) {
-      return date.getFullYear() + "-" +
-        date.getMonth() + "-" +
-        date.getDate();
+        return date.getFullYear() + "-" +
+            date.getMonth() + "-" +
+            date.getDate();
     },
 
     //format time left
     formatTimeLeft: function(seconds, grid) {
-        var sep = (grid)?'':' ';
+        var sep = (grid) ? '' : ' ';
+        if (seconds < 0) {
+          return '<span style="font-size:14px;">0' + sep + '<span style="font-size:10px;">Days</span> 0' + sep + '<span style="font-size:10px;">Hrs</span>';
+        }
+
         var numdays = Math.floor(seconds / 86400);
         var numhours = Math.floor((seconds % 86400) / 3600);
         var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
         var numseconds = ((seconds % 86400) % 3600) % 60;
         var style = "";
-        if ( numdays == 0 && numhours <= 2 ){
-            style="color:red";
+        if (numdays == 0 && numhours <= 2) {
+            style = "color:red";
         }
-        if (isNaN(numhours)){
+        if (isNaN(numhours)) {
             return "<em style='font-size:14px;'>not available</em>";
         }
-        return "<span style='font-size:14px;"+style+"'>"+( numdays > 0 ? numdays + sep + "<span style='font-size:10px;'>Day"+((numdays>1)?"s":"")+"</span> " : "" ) + "" + numhours + sep + "<span style='font-size:10px;'>Hrs</span> " + ( numdays == 0 ? numminutes + sep + "<span style='font-size:10px;'>Min</span> " : "" )+"</span>";
+        return "<span style='font-size:14px;" + style + "'>" + (numdays > 0 ? numdays + sep + "<span style='font-size:10px;'>Day" + ((numdays > 1) ? "s" : "") + "</span> " : "") + "" + numhours + sep + "<span style='font-size:10px;'>Hrs</span> " + (numdays == 0 ? numminutes + sep + "<span style='font-size:10px;'>Min</span> " : "") + "</span>";
 
     },
 
     //get contest link url
-    getContestLinkUrl: function(projectId,contestType) {
-        return siteurl+"/challenge-details/"+projectId+"/?type="+contestType;
+    getContestLinkUrl: function(projectId, contestType) {
+        return siteurl + "/challenge-details/" + projectId + "/?type=" + contestType;
     }
-}
+};
 
 /**
  */
@@ -1412,22 +1828,9 @@ var challengesBP = {
                         <a href="javascript:;" class="contestName"></a>\
                     </div></td>\
                 <td class="colType">&nbsp;</td>\
-                <td class="colTime"><div>\
-                        <div class="row">\
-                            <label class="lbl"></label>\
-                            <div class="val vStartDate"></div>\
-                        </div>\
-                        <div class="row">\
-                            <label class="lbl vEndRoundLabel">Start Date</label>\
-                            <div class="val vEndRound"></div>\
-                        </div>\
-                        <div class="row">\
-                            <label class="lbl"></label>\
-                            <div class="val vEndDate"></div>\
-                        </div>\
-                    </div></td>\
+                <td class="colTime">N/A</td>\
                 <td class="colTLeft"></td>\
-                <td class="colPur"></td>\
+                <td class="colPur">N/A</td>\
                 <td class="colReg"></td>\
                 <td class="colSub"></td>\
             </tr>',
@@ -1489,6 +1892,62 @@ var challengesBP = {
                 <td class="colReg"></td>\
                 <td class="colSub"></td>\
             </tr>',
+     gdUpcoming: '<tr class="inTCO">\
+                <td class="colCh"><div>\
+                        <a href="javascript:;" class="contestName"></a>\
+                    </div></td>\
+                <td class="colType"><i class="ico"> <span class="tooltipData"> \
+                <span class="tipT">Contest Type</span> \
+                <span class="tipC">Web Design</span>\
+                    </span>\
+                </i></td>\
+                <td class="colTime"><div>\
+                        <div class="row">\
+                            <label class="lbl">Start Date</label>\
+                            <div class="val vStartDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl ">Round 1 End</label>\
+                            <div class="val vEndRound"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">End Date</label>\
+                            <div class="val vEndDate"></div>\
+                        </div>\
+                    </div></td>\
+                <td class="colDur"></td>\
+                <td class="colPur"></td>\
+                <td class="colTech"></td>\
+                <td class="colStat"></td>\
+            </tr>',
+    gdDevUpcoming: '<tr class="inTCO">\
+                <td class="colCh"><div>\
+                        <a href="javascript:;" class="contestName"></a>\
+                    </div></td>\
+                <td class="colType"><i class="ico"> <span class="tooltipData"> \
+                <span class="tipT">Contest Type</span> \
+                <span class="tipC">Web Design</span>\
+                    </span>\
+                </i></td>\
+                <td class="colTime"><div>\
+                        <div class="row">\
+                            <label class="lbl">Start Date</label>\
+                            <div class="val vStartDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl ">Register by</label>\
+                            <div class="val vEndRound"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Submit by</label>\
+                            <div class="val vEndDate"></div>\
+                        </div>\
+                    </div></td>\
+                <td class="colDur"></td>\
+                <td class="colPur"></td>\
+                <td class="colTech"></td>\
+                <td class="colStat"></td>\
+            </tr>',
     grDOpen: '<div class="contest">\
                 <div class="cgCh"><a href="javascript:;" class="contestName"></a></div>\
                 <div class="cgTime">\
@@ -1526,6 +1985,41 @@ var challengesBP = {
                     </p>\
                 </div>\
             <i class="ico trackType"> <span class="tooltipData"><span class="tipT">Contest Type</span><span class="tipC">Web Design</span></span></i></div>',
+    grDUpcoming: '<div class="contest">\
+                <div class="cgCh"><a href="javascript:;" class="contestName"></a></div>\
+                <div class="cgTime">\
+                    <div>\
+                        <div class="row">\
+                            <label class="lbl">Start Date</label>\
+                            <div class="val vStartDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Round 1 End</label>\
+                            <div class="val vEndRound"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">End Date</label>\
+                            <div class="val vEndDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Current Status</label>\
+                            <div class="val vStatus"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Technologies</label>\
+                            <div class="val vTech"></div>\
+                        </div>\
+                    </div>\
+                </div>\
+                <div class="genInfo gdUpcoming">\
+                    <p class="cgTLeft">\
+                        <i></i>\
+                    </p>\
+                    <p class="cgPur">\
+                        <i></i>\
+                    </p>\
+                </div>\
+            <i class="ico trackType"> <span class="tooltipData"><span class="tipT">Contest Type</span><span class="tipC">Web Design</span></span></i></div>',
     // grid design open
     grDataAll: '<div class="contest">\
                 <div class="cgCh"><a href="javascript:;" class="contestName"></a></div>\
@@ -1559,7 +2053,7 @@ var challengesBP = {
                         <i></i>\
                     </p>\
                 </div>',
-     // grid develop open
+    // grid develop open
     grDevOpen: '<div class="contest">\
                 <div class="cgCh"><a href="javascript:;" class="contestName"></a></div>\
                 <div class="cgTime">\
@@ -1593,6 +2087,42 @@ var challengesBP = {
                         <i></i>\
                     </p>\
                     <p class="cgSub">\
+                        <i></i>\
+                    </p>\
+                </div>\
+            <i class="ico trackType"> <span class="tooltipData"><span class="tipT">Contest Type</span><span class="tipC">Web Design</span></span></i></div>',
+    //upcoming challenges grid
+    grDevUpcoming: '<div class="contest">\
+                <div class="cgCh"><a href="javascript:;" class="contestName"></a></div>\
+                <div class="cgTime">\
+                    <div>\
+                        <div class="row">\
+                            <label class="lbl">Start Date</label>\
+                            <div class="val vStartDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Register by</label>\
+                            <div class="val vEndRound"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Submit by</label>\
+                            <div class="val vEndDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Current Status</label>\
+                            <div class="val vStatus"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">Technologies</label>\
+                            <div class="val vTech"></div>\
+                        </div>\
+                    </div>\
+                </div>\
+                <div class="genInfo gdUpcoming">\
+                    <p class="cgTLeft">\
+                        <i></i>\
+                    </p>\
+                    <p class="cgPur">\
                         <i></i>\
                     </p>\
                 </div>\
@@ -1710,14 +2240,27 @@ var challengesBP = {
         </tr>',
     /* data table */
     tabData: '<tr class="inTCO">\
-            <td class="colCh srm"><div>\
-                    <a href="javascript:;" class="contestName"></a>\
-                </div></td>\
-            <td class="colType"></td>\
-            <td class="colR1start"></td>\
-            <td class="colReg"></td>\
-        </tr>'
-}
+                <td class="colCh"><div>\
+                        <a href="javascript:;" class="contestName"></a>\
+                    </div></td>\
+                <td class="colType"></td>\
+                <td class="colTime"><div>\
+                        <div class="row">\
+                            <label class="lbl">Start Date</label>\
+                            <div class="val vStartDate"></div>\
+                        </div>\
+                        <div class="row">\
+                            <label class="lbl">End Date</label>\
+                            <div class="val vEndDate"></div>\
+                        </div>\
+                    </div></td>\
+                <td class="colTLeft"></td>\
+                <td class="colPur">N/A</td>\
+                <td class="colPhase">N/A</td>\
+                <td class="colReg"></td>\
+                <td class="colSub"></td>\
+            </tr>'
+};
 
 
 //string insertion at idx index
@@ -1729,13 +2272,13 @@ String.prototype.splice = function(idx, rem, s) {
 $.extend(app, appChallenges);
 
 
-$.getJSON = function(url,  success){
+$.getJSON = function(url, success) {
 
-     return $.ajax({
-       dataType: "json",
-      url: url,
-       success: success,
-     cache: false
+    return $.ajax({
+        dataType: "json",
+        url: url,
+        success: success,
+        cache: false
     });
 }
 
